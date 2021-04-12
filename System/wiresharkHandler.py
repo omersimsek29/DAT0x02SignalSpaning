@@ -31,8 +31,6 @@ end = False
 ### FUNKTIONER
 #capturear och sparar med slumpmässigt namn som pcap
 def captureAndSave(duration, packets, interfaceIndex):
-    home = expanduser("~") # gör detta igen för att vara övertydlig, räcker att köra en gång globalt egentligen
-    os.chdir(home)
     filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(randomFilenameLength))
     # säkerställ att airmon körs, om 0 packet captureas är det troligen pga det
     os.system('tshark -i' + str(interfaceIndex) + ' -w ' + filename + '.pcap -a duration:' + str(duration) + ' -a packets:' + str(packets))
@@ -43,8 +41,6 @@ def captureAndSave(duration, packets, interfaceIndex):
 
 #skapar en csv med samma namn som pcap filen med vissa intressanta fält enbart.
 def createCSVFromCapture(): 
-    home = expanduser("~")
-    os.chdir(home)
     semaphore.acquire()
     while(len(pcapFileNames) == 0): # gör detta pga jag är osäker på om ett race condition kan uppstå eller ej, lade till detta för att undvika det
         time.sleep(0.1)
