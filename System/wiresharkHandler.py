@@ -85,13 +85,7 @@ def filterSSID(ssid, data): # data kommer att droppa alla rader som innehåller 
     data.drop(indexes, inplace=True)
     
 def sendData(message):  #skickar data, skickar bara data en gång atm ska fixa till den ordentligt imorgon
-        while message != 'q':
-                mySocket.sendall(message)
-                data = mySocket.recv(1024).decode()
-                realdata = pickle.loads(data)
-                print ('Received from server: ' + realdata)
-                message = input(" -> ")
-        mySocket.close()
+    mySocket.sendall(message)
 #exempel
 #nytest = filterSSID("Emils privata", wireshark_data)
 
@@ -107,7 +101,7 @@ extraction_thread.start()
 ### AVSLUTA PROGRAM
 time.sleep(12)
 end = True
-
+mySocket.close()
 ### EGNA TANKAR 
 # om transformeringen av data tar längre tid än caputring av packet kommer bottleneck problem att uppstå
 # de tillfälliga filerna som skapas får jag inte glömma att ta bort efter(sparar atm för att se resultaten lättare)
@@ -117,19 +111,11 @@ Kommunikation mellan datorer
 
 Två möjliga alternativ, bluetooth och wifi.
 
-Bluetooth verkar mer praktiskt, men verkar ha en sämre räckvid än vad wifi har som dessutom verkar vara på
-gränsen till att vara för kort. Fördel med bluetooth är också att monitor mode verkar göra det i många fall
-omöjligt att använda vanligt wifi, om en dator har bluetooth verkar det vara en annan interface som vi 
-skulle kunna använda. 
+Fixa så att flera klienter kan ansluta till servern samtidigt.
 
-Wifi verkar krångligare att använda, men har bättre range. På något sätt behöver vi antingen ha att våran
-server broadcastar och berättar att den finns och att klienten då kan känna igen den alternativt att 
-när en klient vill ansluta att den då skickar ut något "hello i'm here" och får sedan respons av servern.
-
-Förslagsvis använder vi vanlig client/server modell. Men det verkar väldigt jobbigt utan att ha en global 
-server när jag tänker på det åtminstone. Föreslår att vi skaffar en global server som mappar olika 
-servrar(förutsätter i framtiden att fler kan finnas) och en mappning mot en ip och kanske en id eller 
-en mac-adress eller liknande. 
+När en klient disconnectar kommer den inte kunna återansluta, så att servern stänger connectionen om någon
+tid har gått ifall klienten kraschat samt eventuellt också att vid medveten disconnect kanske informera
+servern om det
 
 
 -----------------------
