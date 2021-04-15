@@ -17,7 +17,10 @@ public class Main extends Canvas {
     Point point3 = new Point(280,150);
     RssAlgorithm rssAlgorithm = new RssAlgorithm(2417,point1,point2,point3);
 
-
+    /**
+     * In the main method we created a cnvans to present a room as test subject
+     * @param args
+     */
 
     public static void main(String[] args) {
 
@@ -29,28 +32,40 @@ public class Main extends Canvas {
         frame.setVisible(true);
 
     }
+
+    /**
+     * In this method we paint 5 points in the room that we made 3 of them
+     * are the main points as AP point and the other 2 are the predicted one
+     * @param g
+     */
     public void paint(Graphics g) {
-        rssAlgorithm.setP1dbm(61);
-        rssAlgorithm.setP2dbm(41);
+        rssAlgorithm.setP1dbm(41);
+        rssAlgorithm.setP2dbm(65);
         rssAlgorithm.setP3dbm(61);
-        int m=3;
+        int m=4;
         int x  =(int) point1.getX();
         int y=(int) point1.getY();
         while (m>=0) {
-            if (m==2){
+
+                if (m==3){
                 x =(int) point2.getX();
                 y=(int) point2.getY();
 
             }
-            if (m==1){
+            if (m==2){
                 x =(int) point3.getX();
                 y=(int) point3.getY();
-            } if (m==0){
+            } if (m==1){
 
-                x =(int) rssAlgorithm.targetPosition().getX();
-                y=(int) rssAlgorithm.targetPosition().getY();
+                x =(int) rssAlgorithm.targetPosition(point2).getX();
+                y=(int) rssAlgorithm.targetPosition(point2).getY();
 
-
+                System.out.print(" The Cheater is in position between  " +"("+x+","+y+")" );
+            }
+            if (m==0){
+                x =(int) rssAlgorithm.targetPosition(point1).getX();
+                y=(int) rssAlgorithm.targetPosition(point1).getY();
+                System.out.println(" And   " +"("+x+","+y+")" );
             }
 
 
