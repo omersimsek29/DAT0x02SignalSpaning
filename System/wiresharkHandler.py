@@ -25,6 +25,8 @@ csvFileNames = []
 end = False
 host = '192.168.0.100' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
 port = 5000
+startStr = 'start'
+semaphore = threading.Semaphore(0)
 
 ### SETTINGS
 pd.set_option("display.max_rows", None, "display.max_columns", None) # detta gör att man kan printa dataframes snyggt
@@ -84,24 +86,34 @@ def filterSSID(ssid, data): # data kommer att droppa alla rader som innehåller 
     indexes = data[data['wlan.ssid'] == ssid].index
     data.drop(indexes, inplace=True)
     
-def sendData(message):  #skickar data, skickar bara data en gång atm ska fixa till den ordentligt imorgon
+def sendData(message):  #skickar data till server
     mySocket.sendall(message)
-#exempel
-#nytest = filterSSID("Emils privata", wireshark_data)
 
-### TRÅDAR 
+#skickar disconnect till servern och stänger ner våran socket.
+def disconnect():
+    mySocket.send(str.encode('disconnect'))
+    mySocket.close()
 
-semaphore = threading.Semaphore(0)
-capture_thread = threading.Thread(target=captureAndSave, args=[5, 10000, 1])
-extraction_thread = threading.Thread(target=createCSVFromCapture)
-capture_thread.start()
-extraction_thread.start()
+# Väntar på att servern ska signalera start
+def waitForStart(socket):
+    data = socket.recv(1024).decode()
+    if data == startStr:
+        startAllThreads()
+    else:
+        print('error, implementera')
 
+# Skapar trådkopplingen samt pipelinen för data capture, extraction och överföring till server
+def startAllThreads():
+    capture_thread = threading.Thread(target=captureAndSave, args=[5, 10000, 1])
+    extraction_thread = threading.Thread(target=createCSVFromCapture)
+    capture_thread.start()
+    extraction_thread.start()
 
+start_thread = threading.Thread(target = waitForStart, args = [mySocket])
+start_thread.start()
 ### AVSLUTA PROGRAM
 time.sleep(12)
 end = True
-mySocket.close()
 ### EGNA TANKAR 
 # om transformeringen av data tar längre tid än caputring av packet kommer bottleneck problem att uppstå
 # de tillfälliga filerna som skapas får jag inte glömma att ta bort efter(sparar atm för att se resultaten lättare)
@@ -109,9 +121,6 @@ mySocket.close()
 """
 Kommunikation mellan datorer
 
-Två möjliga alternativ, bluetooth och wifi.
-
-Fixa så att flera klienter kan ansluta till servern samtidigt.
 
 När en klient disconnectar kommer den inte kunna återansluta, så att servern stänger connectionen om någon
 tid har gått ifall klienten kraschat samt eventuellt också att vid medveten disconnect kanske informera
