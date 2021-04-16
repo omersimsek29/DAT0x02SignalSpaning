@@ -1,17 +1,74 @@
 import pickle
-import threading
+import queue
 import socket
+import threading
 
-max_conns = 3
+### GLOBALS
+
+# noterbart: När ankarna connectar till servern sparas deras ip-adress och det index ankarna
+# får antas vara konstant och används i andra listor för att representera olika ankare.
+# notera också att Queues är trådsäkra och rekommenderade att använda i multithreading i python
+# Listor är också trådsäkra, men data ändringar är inte, men eftersom Queues är trådsäkra
+# antar jag att en lista av queues borde vara helt säker. Dock inte fullt testat. 
+
+max_conns = 1 # ska vara 3 med alla ankare uppsatta
 host = "0.0.0.0"
 port = 5000
+clientThreads = [] # kanske inte behövs
+ipAdresses = []
+dataQueues = [None] * max_conns
+connections = []
+discStr = 'disconnect'
+startStr = 'start'
 
-def client_thread(conn):
+### FUNKTIONER
+
+# funktion där position beräknas när algorithm tråden fått data från alla ankare. 
+def algorithm(extracted_datas):
+    print('calculate position')
+
+# tänkt som en separat tråd som synkar algoritm beräkningar när servern mottagit data från alla
+# ankare
+def algorithm_thread():
+    emptyExist = False
     while True:
-        packet = conn.recv(4096)
-        if packet: 
-            extracted_data = pickle.loads(packet)
-            print(extracted_data)
+        for index in range(len(dataQueues)):
+            if dataQueues[index].empty():
+                emptyExist = True
+                break
+        if not emptyExist:
+            extracted_datas = []
+            for index in range(len(dataQueues)):
+                extracted_datas.append(dataQueues[index])
+                algorithm(extracted_datas)
+ 
+# returnerar index för given ip-adress
+def indexFromIp(ip):
+    return ipAdresses.index(ip)
+
+# funktion för hantering av ankar kommunikation mellan server och ett ankare i separat tråd.
+def client_thread(conn, ip): #queue ska by default vara rekommenderat i multithreading och vara thread safe by default
+    while True:
+        if len(ipAdresses) == max_conns:
+            packet = conn.recv(4096)
+            if packet: 
+                try:    
+                    data = packet.decode()
+                    if data == discStr:
+                        print('closing')
+                        conn.close()
+                        break
+                except:
+                    extracted_data = pickle.loads(packet)
+                    if dataQueues[indexFromIp(ip)] == None:
+                        q = queue.Queue()
+                        q.put(extracted_data)
+                        dataQueues[indexFromIp(ip)] = q
+                    else:
+                        dataQueues[indexFromIp(ip)].put(extracted_data)
+                    print(extracted_data)
+
+### MAIN
 
 def Main():
     data = []
@@ -23,9 +80,16 @@ def Main():
     mySocket.listen(max_conns)
     while True:
         conn, addr = mySocket.accept()
-        print ("Connection from: " + str(addr))
-        clientConnection = threading.Thread(target=client_thread, args=[conn])
+        print ("Connection from: " + str(addr[0]))
+        ipAdresses.append(addr[0])
+        connections.append(conn)
+        clientConnection = threading.Thread(target=client_thread, args=[conn, addr[0]])
         clientConnection.start()
+        clientThreads.append(clientConnection)
+
+        if(len(ipAdresses) == max_conns):
+            for index in range(len(connections)):
+                connections[index].send(startStr.encode()) # skicka till alla enheter att det är dags att starta capture.
     conn.close()
 
 if __name__ == '__main__':
