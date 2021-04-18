@@ -2,6 +2,7 @@ import pickle
 import queue
 import socket
 import threading
+import time
 
 ### GLOBALS
 
@@ -11,12 +12,12 @@ import threading
 # Listor är också trådsäkra, men data ändringar är inte, men eftersom Queues är trådsäkra
 # antar jag att en lista av queues borde vara helt säker. Dock inte fullt testat. 
 
-max_conns = 1 # ska vara 3 med alla ankare uppsatta
+max_conns = 2 # ska vara 3 med alla ankare uppsatta
 host = "0.0.0.0"
 port = 5000
 clientThreads = [] # kanske inte behövs
 ipAdresses = []
-dataQueues = [None] * max_conns
+dataQueues =  [queue.Queue()] * max_conns
 connections = []
 discStr = 'disconnect'
 startStr = 'start'
@@ -30,8 +31,8 @@ def algorithm(extracted_datas):
 # tänkt som en separat tråd som synkar algoritm beräkningar när servern mottagit data från alla
 # ankare
 def algorithm_thread():
-    emptyExist = False
     while True:
+        emptyExist = False
         for index in range(len(dataQueues)):
             if dataQueues[index].empty():
                 emptyExist = True
@@ -39,8 +40,13 @@ def algorithm_thread():
         if not emptyExist:
             extracted_datas = []
             for index in range(len(dataQueues)):
-                extracted_datas.append(dataQueues[index])
-                algorithm(extracted_datas)
+                extracted_datas.append(dataQueues[index].get())
+            print('took data from both threads at ' + str(time.time()))
+            print('queue 1: ')
+            print(extracted_datas[0])
+            print('queue 2: ')
+            print(extracted_datas[1])
+            print('--------------------------------------')
  
 # returnerar index för given ip-adress
 def indexFromIp(ip):
@@ -50,9 +56,9 @@ def indexFromIp(ip):
 def client_thread(conn, ip): #queue ska by default vara rekommenderat i multithreading och vara thread safe by default
     while True:
         if len(ipAdresses) == max_conns:
-            packet = conn.recv(4096)
+            packet = conn.recv(9192)
             if packet: 
-                try:    
+                try: # alla sträng kommandon servern kan hantera ska vara här
                     data = packet.decode()
                     if data == discStr:
                         print('closing')
@@ -60,17 +66,11 @@ def client_thread(conn, ip): #queue ska by default vara rekommenderat i multithr
                         break
                 except:
                     extracted_data = pickle.loads(packet)
-                    if dataQueues[indexFromIp(ip)] == None:
-                        q = queue.Queue()
-                        q.put(extracted_data)
-                        dataQueues[indexFromIp(ip)] = q
-                    else:
-                        dataQueues[indexFromIp(ip)].put(extracted_data)
-                    print(extracted_data)
+                    dataQueues[indexFromIp(ip)].put(extracted_data)
 
 ### MAIN
 
-def Main():
+def tain():
     data = []
     print (socket.gethostname())
 
@@ -91,6 +91,10 @@ def Main():
             for index in range(len(connections)):
                 connections[index].send(startStr.encode()) # skicka till alla enheter att det är dags att starta capture.
     conn.close()
-
-if __name__ == '__main__':
-    Main()
+    
+    
+main_thread = threading.Thread(target = tain)
+main_thread.start()
+algorithm_thread()
+#if __name__ == '__main__':
+  #  Main()
