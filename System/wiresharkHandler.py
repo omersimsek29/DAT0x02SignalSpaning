@@ -26,6 +26,7 @@ end = False
 host = '192.168.0.100' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
 port = 5000
 startStr = 'start'
+quitStr = 'quit'
 semaphore = threading.Semaphore(0)
 
 ### SETTINGS
@@ -36,6 +37,7 @@ mySocket = socket.socket()
 mySocket.connect((host,port))
 
 ### FUNKTIONER
+
 #capturear och sparar med slumpmässigt namn som pcap
 def captureAndSave(duration, packets, interfaceIndex):
     home = expanduser("~") # gör detta igen för att vara övertydlig, räcker att köra en gång globalt egentligen
@@ -47,6 +49,8 @@ def captureAndSave(duration, packets, interfaceIndex):
     semaphore.release()
     if end == False:
         captureAndSave(duration, packets, interfaceIndex)
+    else:     
+        removeFile(home + '/' + filename + '.pcap')
 
 #skapar en csv med samma namn som pcap filen med vissa intressanta fält enbart.
 def createCSVFromCapture(): 
@@ -62,13 +66,22 @@ def createCSVFromCapture():
     if end == False:
         extractFromCsv()
         createCSVFromCapture()
+    else: # om end = True kommer filerna inte tas bort, och filerna kan inte alltid tas bort så här tidigt
+        removeFile(home + '/' + captureFile + '.pcap')
+        removeFile(home + '/' + captureFile + '.csv')
+
+def removeFile(path):
+    if os.path.exists(path):
+        os.remove(path)
 
 #plockar ut nyckeldata från csvn och beräknar medelvärdet för signalstrykan om en transmitter har flera packet i samma caoture.
 def extractFromCsv(ssid = ''):
     while(len(csvFileNames) == 0):
         time.sleep(0.1)
-    wireshark_data = pd.read_csv(home + '/' + csvFileNames[0] + '.csv')
-    csvFileNames.pop(0)
+    wireshark_data = pd.read_csv(home + '/' + csvFileNames[0] + '.csv') # kanske ska lägga till errorbadllines = False
+    filename = csvFileNames.pop(0)
+    removeFile(home + '/' + filename + '.csv')
+    removeFile(home + '/' + filename + '.pcap')
     extracted_data = pd.DataFrame(columns=['source', 'signal strength', 'packets'])
     if ssid != '' :
         wireshark_data = filterSSID(ssid, wireshark_data)
@@ -85,14 +98,21 @@ def extractFromCsv(ssid = ''):
 def filterSSID(ssid, data): # data kommer att droppa alla rader som innehåller angivet ssid
     indexes = data[data['wlan.ssid'] == ssid].index
     data.drop(indexes, inplace=True)
-    
-def sendData(message):  #skickar data till server
+
+# Filtrerar bort alla sources förutom angiven source (för att underlätta testning av lokalisering)
+def filterSource(source, data):
+    data = data[data['source'] == source] # inte säker på om jag dessutom behöver returnera data eller om det uppdateras automatiskt 
+
+#skickar data till server
+def sendData(message): 
     mySocket.sendall(message)
 
 #skickar disconnect till servern och stänger ner våran socket.
 def disconnect():
     mySocket.send(str.encode('disconnect'))
     mySocket.close()
+    global end
+    end = True
 
 # Väntar på att servern ska signalera start
 def waitForStart(socket):
@@ -104,17 +124,25 @@ def waitForStart(socket):
 
 # Skapar trådkopplingen samt pipelinen för data capture, extraction och överföring till server
 def startAllThreads():
-    capture_thread = threading.Thread(target=captureAndSave, args=[5, 10000, 1])
+    capture_thread = threading.Thread(target=captureAndSave, args=[1, 500, 1])
     extraction_thread = threading.Thread(target=createCSVFromCapture)
     capture_thread.start()
     extraction_thread.start()
+    
+# simulering av gränssnitt, för att underläta körning under godtycklig tid. 
+def consoleLoop():
+    while True:
+        input_line = input()
+        if input_line == quitStr:
+            disconnect()
 
+### TRÅDAR
 start_thread = threading.Thread(target = waitForStart, args = [mySocket])
 start_thread.start()
-### AVSLUTA PROGRAM
-time.sleep(12)
-end = True
+
+consoleLoop()
 ### EGNA TANKAR 
+
 # om transformeringen av data tar längre tid än caputring av packet kommer bottleneck problem att uppstå
 # de tillfälliga filerna som skapas får jag inte glömma att ta bort efter(sparar atm för att se resultaten lättare)
 
@@ -125,6 +153,8 @@ Kommunikation mellan datorer
 När en klient disconnectar kommer den inte kunna återansluta, så att servern stänger connectionen om någon
 tid har gått ifall klienten kraschat samt eventuellt också att vid medveten disconnect kanske informera
 servern om det
+
+Fixa så att signal styrkor med matchande mac-adresser plockas ut och skickas till algoritmen
 
 
 -----------------------
@@ -138,6 +168,8 @@ Grafiskt gränssnitt
 ----------------------
 
 Eventuellt fingerprinting av alla datorer och signaler som vi använder vid behov
+
+Kolla vidare på detta, kanske med hjälp av app(kamera, gps, stegräknare, eller annan inbyggd funktion)
 
 
 """

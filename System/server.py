@@ -47,7 +47,15 @@ def algorithm_thread():
             print('queue 2: ')
             print(extracted_datas[1])
             print('--------------------------------------')
- 
+            # kommentera ut antingen de printsen ovanför eller for looparna under för att enklare läsa vad som sker, dvs ha bara antingen eller aktiv
+            for index in range(extracted_datas[0].shape[0]): # källan måste registrerats hos alla ankare för att vara relevant.
+                shared_rows = []
+                for row in extracted_datas:
+                    shared_rows.append(row.loc[row['source'] == extracted_datas[0].iloc[index]['source']])
+                if len(shared_rows) == max_conns:
+                    for i in range(len(shared_rows)):
+                        print('Signal strength of client : ' + str(i) + ' ' + str(shared_rows[i]['signal strength']))
+                #shared_rows skickas sedan till algoritmen
 # returnerar index för given ip-adress
 def indexFromIp(ip):
     return ipAdresses.index(ip)
@@ -70,7 +78,7 @@ def client_thread(conn, ip): #queue ska by default vara rekommenderat i multithr
 
 ### MAIN
 
-def tain():
+def connection_thread():
     data = []
     print (socket.gethostname())
 
@@ -93,7 +101,7 @@ def tain():
     conn.close()
     
     
-main_thread = threading.Thread(target = tain)
+main_thread = threading.Thread(target = connection_thread)
 main_thread.start()
 algorithm_thread()
 #if __name__ == '__main__':
