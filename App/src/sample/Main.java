@@ -39,9 +39,9 @@ public class Main extends Canvas {
      * @param g
      */
     public void paint(Graphics g) {
-        rssAlgorithm.setP1dbm(41);
-        rssAlgorithm.setP2dbm(65);
-        rssAlgorithm.setP3dbm(61);
+        rssAlgorithm.setP1dbm(55);
+        rssAlgorithm.setP2dbm(66);
+        rssAlgorithm.setP3dbm(67);
         int m=4;
         int x  =(int) point1.getX();
         int y=(int) point1.getY();
@@ -56,15 +56,20 @@ public class Main extends Canvas {
                 x =(int) point3.getX();
                 y=(int) point3.getY();
             } if (m==1){
-
+                /*
                 x =(int) rssAlgorithm.targetPosition(point2).getX();
                 y=(int) rssAlgorithm.targetPosition(point2).getY();
-
+*/
                 System.out.print(" The Cheater is in position between  " +"("+x+","+y+")" );
             }
             if (m==0){
+                /*
                 x =(int) rssAlgorithm.targetPosition(point1).getX();
                 y=(int) rssAlgorithm.targetPosition(point1).getY();
+
+                 */
+                x =(int) rssAlgorithm.targetPosition3().getX();
+                y=(int) rssAlgorithm.targetPosition3().getY();
                 System.out.println(" And   " +"("+x+","+y+")" );
             }
 

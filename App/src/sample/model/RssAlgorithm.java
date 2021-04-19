@@ -81,4 +81,36 @@ if (a==ab1){
        return new Point(x,y);
     }
 
+    public Point targetPosition2(){
+        int r1 = distanceBetweenNodeAndSource(p1dbm);
+        int r2 = distanceBetweenNodeAndSource(p2dbm);
+        int r3 = distanceBetweenNodeAndSource(p3dbm);
+
+       double a = (-2*ab1.getX())+(2*ab2.getX());
+       double b = (-2*ab1.getY())+(2*ab2.getY());
+       double d = (-2*ab2.getX())+(2*ab3.getX());
+       double e =(-2*ab2.getY())+(2*ab3.getY());
+
+       double c = Math.pow(r1,2)-Math.pow(r2,2)-Math.pow(ab1.getX(),2)+Math.pow(ab2.getX(),2)-Math.pow(ab1.getY(),2)+Math.pow(ab2.getY(),2);
+       double f =  Math.pow(r2,2)-Math.pow(r3,2)-Math.pow(ab2.getX(),2)+Math.pow(ab3.getX(),2)-Math.pow(ab2.getY(),2)+Math.pow(ab3.getY(),2);
+
+        int x = (int) (((c*f)-(f*b))/((e*a)-(b*d)));
+        int y = (int) (((c*d)-(a*f))/((b*d)-(a*e)));
+
+        return new Point(x,y);
+   }
+
+    public Point targetPosition3(){
+        int r1 = distanceBetweenNodeAndSource(p1dbm);
+        int r2 = distanceBetweenNodeAndSource(p2dbm);
+        int r3 = distanceBetweenNodeAndSource(p3dbm);
+
+       int x = (int) ((Math.pow(r2,2)-Math.pow(r3,2)+Math.pow(ab3.getX(),2))/(2*ab3.getX()));
+        int y = (int) (((Math.pow(r2,2)-Math.pow(r1,2)+Math.pow(ab1.getX(),2)+Math.pow(ab1.getY(),2))/(2*ab1.getY()))-
+                ((ab1.getX()/ab1.getY())*x));
+
+
+        return new Point(x,y);
+
+    }
 }
