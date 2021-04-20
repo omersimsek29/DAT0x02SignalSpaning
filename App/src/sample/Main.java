@@ -1,10 +1,6 @@
 package sample;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+
 import sample.model.RssAlgorithm;
 
 import javax.swing.*;
@@ -18,7 +14,7 @@ public class Main extends Canvas {
     RssAlgorithm rssAlgorithm = new RssAlgorithm(2417,point1,point2,point3);
 
     /**
-     * In the main method we created a cnvans to present a room as test subject
+     * In the main method we created a canvas to present a room as test subject
      * @param args
      */
 
@@ -39,9 +35,9 @@ public class Main extends Canvas {
      * @param g
      */
     public void paint(Graphics g) {
-        rssAlgorithm.setP1dbm(55);
-        rssAlgorithm.setP2dbm(66);
-        rssAlgorithm.setP3dbm(67);
+        rssAlgorithm.setP1dbm(50);
+        rssAlgorithm.setP2dbm(75);
+        rssAlgorithm.setP3dbm(44);
         int m=4;
         int x  =(int) point1.getX();
         int y=(int) point1.getY();
@@ -60,7 +56,7 @@ public class Main extends Canvas {
                 x =(int) rssAlgorithm.targetPosition(point2).getX();
                 y=(int) rssAlgorithm.targetPosition(point2).getY();
 */
-                System.out.print(" The Cheater is in position between  " +"("+x+","+y+")" );
+               // System.out.print(" The Cheater is in position between  " +"("+x+","+y+")" );
             }
             if (m==0){
                 /*
@@ -68,8 +64,8 @@ public class Main extends Canvas {
                 y=(int) rssAlgorithm.targetPosition(point1).getY();
 
                  */
-                x =(int) rssAlgorithm.targetPosition3().getX();
-                y=(int) rssAlgorithm.targetPosition3().getY();
+                x =(int) rssAlgorithm.targetPosition2().getX();
+                y=(int) rssAlgorithm.targetPosition2().getY();
                 System.out.println(" And   " +"("+x+","+y+")" );
             }
 

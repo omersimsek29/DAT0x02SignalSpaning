@@ -1,8 +1,6 @@
 package sample.model;
 import java.awt.*;
 import java.lang.Math;
-import java.util.HashMap;
-import java.util.Map;
 
 
 // this class is responsible of signal strength algorithm calculation
@@ -15,6 +13,7 @@ public class RssAlgorithm {
     int p1dbm=0;
     int p2dbm=0;
     int p3dbm=0;
+
 
  public RssAlgorithm(int frequency, Point ab1 ,Point ab2 ,Point ab3){
 
@@ -81,36 +80,28 @@ if (a==ab1){
        return new Point(x,y);
     }
 
+    /**
+     * this method is use 3 points to get an unknown point
+     * @return a point of the predicted point
+     */
     public Point targetPosition2(){
-        int r1 = distanceBetweenNodeAndSource(p1dbm);
-        int r2 = distanceBetweenNodeAndSource(p2dbm);
-        int r3 = distanceBetweenNodeAndSource(p3dbm);
+        int disOfPoint1 =  distanceBetweenNodeAndSource(p1dbm);
+        int disOfPoint2 = distanceBetweenNodeAndSource(p2dbm);
+        int disOfPoint3 = distanceBetweenNodeAndSource(p3dbm);
 
        double a = (-2*ab1.getX())+(2*ab2.getX());
        double b = (-2*ab1.getY())+(2*ab2.getY());
        double d = (-2*ab2.getX())+(2*ab3.getX());
        double e =(-2*ab2.getY())+(2*ab3.getY());
 
-       double c = Math.pow(r1,2)-Math.pow(r2,2)-Math.pow(ab1.getX(),2)+Math.pow(ab2.getX(),2)-Math.pow(ab1.getY(),2)+Math.pow(ab2.getY(),2);
-       double f =  Math.pow(r2,2)-Math.pow(r3,2)-Math.pow(ab2.getX(),2)+Math.pow(ab3.getX(),2)-Math.pow(ab2.getY(),2)+Math.pow(ab3.getY(),2);
+       double c = Math.pow(disOfPoint1,2)-Math.pow(disOfPoint2,2)-Math.pow(ab1.getX(),2)+Math.pow(ab2.getX(),2)-Math.pow(ab1.getY(),2)+Math.pow(ab2.getY(),2);
+       double f =  Math.pow(disOfPoint2,2)-Math.pow(disOfPoint3,2)-Math.pow(ab2.getX(),2)+Math.pow(ab3.getX(),2)-Math.pow(ab2.getY(),2)+Math.pow(ab3.getY(),2);
 
-        int x = (int) (((c*f)-(f*b))/((e*a)-(b*d)));
-        int y = (int) (((c*d)-(a*f))/((b*d)-(a*e)));
+        int x = (int)Math.round (((c*e)-(f*b))/((e*a)-(b*d)));
+        int y = (int) Math.round (((c*d)-(a*f))/((b*d)-(a*e)));
 
         return new Point(x,y);
    }
 
-    public Point targetPosition3(){
-        int r1 = distanceBetweenNodeAndSource(p1dbm);
-        int r2 = distanceBetweenNodeAndSource(p2dbm);
-        int r3 = distanceBetweenNodeAndSource(p3dbm);
 
-       int x = (int) ((Math.pow(r2,2)-Math.pow(r3,2)+Math.pow(ab3.getX(),2))/(2*ab3.getX()));
-        int y = (int) (((Math.pow(r2,2)-Math.pow(r1,2)+Math.pow(ab1.getX(),2)+Math.pow(ab1.getY(),2))/(2*ab1.getY()))-
-                ((ab1.getX()/ab1.getY())*x));
-
-
-        return new Point(x,y);
-
-    }
 }
