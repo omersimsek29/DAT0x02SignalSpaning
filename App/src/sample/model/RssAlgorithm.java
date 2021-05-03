@@ -40,7 +40,7 @@ public class RssAlgorithm {
      * This method is to give the predicted distance between a node and transmitter.
      * @FSPL is free space path loss which depend most on the AP.
      */
-   public int  distanceBetweenNodeAndSource( int dbm){
+       public int  distanceBetweenNodeAndSource( int dbm){
     double FSPL = 27.55;
 
     double d =  Math.pow(10 , (((FSPL-(20*Math.log10(frequency)))+Math.abs(dbm))/20));
@@ -54,21 +54,20 @@ public class RssAlgorithm {
     /**
      * This method tage a point which should be between point a or b
      * and return a point to the predicted location of a TI
-     * @param a
      * @return Point of an (x,Y)
      */
 
-   public Point targetPosition(Point a ){
+   public Point targetPosition(){
        int d1 = distanceBetweenNodeAndSource(p1dbm);
        int d2 = distanceBetweenNodeAndSource(p2dbm);
        int d3 = distanceBetweenNodeAndSource(p3dbm);
        int y=0;
        int x = 0;
-if (a==ab1){
+if (ab1.getY()<ab2.getY()){
     y = (int) (ab1.getY()+(d1*10));
 
 
-}else if (a==ab2){
+}else if (ab1.getY()>ab2.getY()){
      y = (int) (ab2.getY()-(d2*10));
 
 }

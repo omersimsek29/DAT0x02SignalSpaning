@@ -11,7 +11,7 @@ public class Main extends Canvas {
     Point point1 = new Point(150,0);
     Point point2 = new Point(150,280);
     Point point3 = new Point(280,150);
-    RssAlgorithm rssAlgorithm = new RssAlgorithm(2417,point1,point2,point3);
+    Rss rssAlgorithm = new RssAlgorithm(2417,point1,point2,point3);
 
     /**
      * In the main method we created a canvas to present a room as test subject
@@ -53,8 +53,8 @@ public class Main extends Canvas {
                 y=(int) point3.getY();
             } if (m==1){
                 /*
-                x =(int) rssAlgorithm.targetPosition(point2).getX();
-                y=(int) rssAlgorithm.targetPosition(point2).getY();
+                x =(int) rssAlgorithm.targetPosition().getX();
+                y=(int) rssAlgorithm.targetPosition().getY();
 */
                // System.out.print(" The Cheater is in position between  " +"("+x+","+y+")" );
             }
