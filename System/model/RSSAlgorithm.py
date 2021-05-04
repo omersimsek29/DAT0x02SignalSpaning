@@ -3,6 +3,9 @@ from math import log10
 class RSSAlgorithm:
 
     frequency = 0 
+    point1 = (0,0)
+    point2 =(0,0)
+    point3 = (0,0)
     
     def __init__(self, frequency, point1, point2, point3):
         self.frequency = frequency
@@ -43,13 +46,13 @@ def targeted_positon2(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
     d2 = distance_between_node_and_source(dbm2,frequency)
     d3 = distance_between_node_and_source(dbm3 ,frequency)
     
-    a = (-2 * point1.x) + (2*point2.x)
-    b = (-2 * point1.y) + (2*point2.y)
-    d = (-2 * point2.x) + (2*point3.x)
-    e = (-2 * point2.y) + (2*point3.y)
+    a = (-2 * point1[0]) + (2*point2[0])
+    b = (-2 * point1[1]) + (2*point2[1])
+    d = (-2 * point2[0]) + (2*point3[0])
+    e = (-2 * point2[1]) + (2*point3[1])
     
-    c = (d1**2) - (d2 **2) - (point1.x**2)+(point2.x**2)-(point1.y**2)+(point2.y**2)
-    f = (d2**2) - (d3 **2) - (point2.x**2)+(point3.x**2)-(point2.y**2)+(point3.y**2)
+    c = (d1**2) - (d2 **2) - (point1[0]**2)+(point2[0]**2)-(point1[1]**2)+(point2[1]**2)
+    f = (d2**2) - (d3 **2) - (point2[0]**2)+(point3[0]**2)-(point2[1]**2)+(point3[1]**2)
     
     x = ((c*e)-(f*b))/((e*a)-(b*d))
     y = ((c*d)-(a*f))/((b*d)-(a*e))
