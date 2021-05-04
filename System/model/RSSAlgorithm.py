@@ -2,6 +2,8 @@ from math import log10
 
 class RSSAlgorithm:
 
+    frequency = 0 
+    
     def __init__(self, frequency, point1, point2, point3):
         self.frequency = frequency
         self.point1 = point1
@@ -31,11 +33,11 @@ def targeted_positon(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
     else:
       x = point3.x-d3
             
-      return x,y
+      return (x,y)
   
   
   
-  def targeted_positon2(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
+def targeted_positon2(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
       
     d1 = distance_between_node_and_source(dbm1,frequency)
     d2 = distance_between_node_and_source(dbm2,frequency)
@@ -52,4 +54,4 @@ def targeted_positon(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
     x = ((c*e)-(f*b))/((e*a)-(b*d))
     y = ((c*d)-(a*f))/((b*d)-(a*e))
     
-    return x,y
+    return (x,y)
