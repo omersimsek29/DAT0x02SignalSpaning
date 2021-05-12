@@ -23,7 +23,7 @@ randomFilenameLength = 10
 pcapFileNames = []
 csvFileNames = []
 end = False
-host = '192.168.0.100' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
+host = '192.168.1.103' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
 port = 5000
 startStr = 'start'
 quitStr = 'quit'
@@ -79,6 +79,7 @@ def extractFromCsv(ssid = ''):
     while(len(csvFileNames) == 0):
         time.sleep(0.1)
     wireshark_data = pd.read_csv(home + '/' + csvFileNames[0] + '.csv') # kanske ska lägga till errorbadllines = False
+    #filterSource("c0:ee:fb:89:a6:cf", wireshark_data)
     filename = csvFileNames.pop(0)
     removeFile(home + '/' + filename + '.csv')
     removeFile(home + '/' + filename + '.pcap')
@@ -140,7 +141,10 @@ def consoleLoop():
 start_thread = threading.Thread(target = waitForStart, args = [mySocket])
 start_thread.start()
 
-consoleLoop()
+#consoleLoop()
+time.sleep(30)
+
+end = True
 ### EGNA TANKAR 
 
 # om transformeringen av data tar längre tid än caputring av packet kommer bottleneck problem att uppstå
