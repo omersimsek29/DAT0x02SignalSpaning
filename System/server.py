@@ -14,7 +14,7 @@ import math
 # Listor är också trådsäkra, men data ändringar är inte, men eftersom Queues är trådsäkra
 # antar jag att en lista av queues borde vara helt säker. Dock inte fullt testat. 
 
-max_conns = 2 # ska vara 3 med alla ankare uppsatta
+max_conns = 3 # ska vara 3 med alla ankare uppsatta
 host = "0.0.0.0"
 port = 5000
 clientThreads = [] # kanske inte behövs
@@ -127,6 +127,13 @@ def inExamRoom(point): #TODO
         return 'belägen i tentasal'
 # tänkt som en separat tråd som synkar algoritm beräkningar när servern mottagit data från alla
 # ankare
+def ipToPoint(ip):
+    if ip == "192.168.1.101":
+        return point1
+    elif ip == "192.168.1.102":
+        return point2
+    elif ip == "192.168.1.100":
+        return point3
 def algorithm_thread():
     while True:
         emptyExist = False
@@ -153,13 +160,14 @@ def algorithm_thread():
                     calculated_pos = (0,0)
                     for i in range(len(shared_rows)):
                         if len(shared_rows[0]['signal strength'].values) > 0 and  len(shared_rows[1]['signal strength'].values) > 0:
-                            calculated_pos = targeted_positon2(point1, point2, point3, shared_rows[0]['signal strength'].values[0], shared_rows[1]['signal strength'].values[0], -60, frequency) # ska vara en till med index 2 när alla ankare är anslutna
+                            calculated_pos = targeted_positon2(ipToPoint(ipAdresses[0]), ipToPoint(ipAdresses[1]), ipToPoint(ipAdresses[2]), shared_rows[0]['signal strength'].values[0], shared_rows[1]['signal strength'].values[0], shared_rows[2]['signal strength'].values[0], frequency) # ska vara en till med index 2 när alla ankare är anslutna
                         #print(shared_rows)
                         #print(shared_rows[0]['signal strength'].values[0])
                         #print('\n')
                         #print(shared_rows[1]['signal strength'])
                         #print(calculated_pos[0])
-                        print(str(shared_rows[0]['source'].values[0]) + ' är beräknad att ligga på ' + str(calculated_pos) + ' och ' + str(inExamRoom(False)))
+                        if not (calculated_pos == (0,0)):
+                            print(str(shared_rows[0]['source'].values[0]) + ' är beräknad att ligga på ' + str(calculated_pos) + ' och ' + str(inExamRoom(False)))
                         #print('Signal strength of client : ' + str(i) + ' ' + str(shared_rows[i]['signal strength']))
                 #shared_rows skickas sedan till algoritmen
             
@@ -186,26 +194,30 @@ def client_thread(conn, ip): #queue ska by default vara rekommenderat i multithr
 ### MAIN
 
 def connection_thread():
-    data = []
-    print (socket.gethostname())
-
-    mySocket = socket.socket()
-    mySocket.bind((host,port))
-
-    mySocket.listen(max_conns)
-    while True:
-        conn, addr = mySocket.accept()
-        print ("Connection from: " + str(addr[0]))
-        ipAdresses.append(addr[0])
-        connections.append(conn)
-        clientConnection = threading.Thread(target=client_thread, args=[conn, addr[0]])
-        clientConnection.start()
-        clientThreads.append(clientConnection)
-
-        if(len(ipAdresses) == max_conns):
-            for index in range(len(connections)):
-                connections[index].send(startStr.encode()) # skicka till alla enheter att det är dags att starta capture.
-    conn.close()
+    try:
+        data = []
+        print (socket.gethostname())
+    
+        mySocket = socket.socket()
+        mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        mySocket.bind((host,port))
+    
+        mySocket.listen(max_conns)
+        while True:
+            conn, addr = mySocket.accept()
+            print ("Connection from: " + str(addr[0]))
+            ipAdresses.append(addr[0])
+            connections.append(conn)
+            clientConnection = threading.Thread(target=client_thread, args=[conn, addr[0]])
+            clientConnection.start()
+            clientThreads.append(clientConnection)
+    
+            if(len(ipAdresses) == max_conns):
+                for index in range(len(connections)):
+                    connections[index].send(startStr.encode()) # skicka till alla enheter att det är dags att starta capture.
+        conn.close()
+    except KeyboardInterrupt:
+        conn.close()
     
     
 main_thread = threading.Thread(target = connection_thread)
