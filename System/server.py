@@ -5,7 +5,7 @@ import threading
 from math import log10
 import time
 import math
-
+import numpy as np
 ### GLOBALS
 
 # noterbart: När ankarna connectar till servern sparas deras ip-adress och det index ankarna
@@ -23,10 +23,13 @@ dataQueues =  [queue.Queue()] * max_conns
 connections = []
 discStr = 'disconnect'
 startStr = 'start'
-point1 = (6,5)
-point2 = (3, 2.5)
+point1 = (0,0)
+point2 = (3, 6.5)
 point3 = (6,0)
-frequency = 2412
+frequency = 2422
+listCalculted = []
+listInExamRoom=[]
+listdbm = []
 
 ### KLASSER
 
@@ -64,7 +67,7 @@ def targeted_positon(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
         y = point2.y - d2
         
     else:
-      x = point3.x-d3
+      x = point3.x-d3  
             
       return (x,y)
   
@@ -117,14 +120,36 @@ def targeted_positon2(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
     
     return (x,y)
 
+def targeted_positon(point1,point2,point3,dbm1,dbm2,dbm3,frequency):
+    d1 = distance_between_node_and_source(dbm1,frequency)
+    d2 = distance_between_node_and_source(dbm2,frequency)
+    d3 = distance_between_node_and_source(dbm3 ,frequency)
+    y=0
+    x=0
+    if point1[1] < point2[1]:
+       
+        y = point2[1] - d2
+        x = point3[0] - d3  
+        print("he1")
+
+    elif point1[1] > point2[1]:
+        y = point1[1] + d1
+        x = point3[0] - d3  
+        print("he2")
+        
+            
+    return (x,y)
+
+  
+
 # funktion där position beräknas när algorithm tråden fått data från alla ankare. 
 def algorithm(extracted_datas):
     print('calculate position')
 def inExamRoom(point): #TODO
-    if point == False:
-        return ' inte belägen i tentasal'
+    if point[0] < 0 or point[0] > 6 or point[1] < 0 or point[1] > 6.5:
+        return False
     else:
-        return 'belägen i tentasal'
+        return True 
 # tänkt som en separat tråd som synkar algoritm beräkningar när servern mottagit data från alla
 # ankare
 def ipToPoint(ip):
@@ -159,15 +184,23 @@ def algorithm_thread():
                 if len(shared_rows) == max_conns:
                     calculated_pos = (0,0)
                     for i in range(len(shared_rows)):
-                        if len(shared_rows[0]['signal strength'].values) > 0 and  len(shared_rows[1]['signal strength'].values) > 0:
-                            calculated_pos = targeted_positon2(ipToPoint(ipAdresses[0]), ipToPoint(ipAdresses[1]), ipToPoint(ipAdresses[2]), shared_rows[0]['signal strength'].values[0], shared_rows[1]['signal strength'].values[0], shared_rows[2]['signal strength'].values[0], frequency) # ska vara en till med index 2 när alla ankare är anslutna
+                        if len(shared_rows[0]['signal strength'].values) > 0 and  len(shared_rows[1]['signal strength'].values) > 0 and len(shared_rows[2]['signal strength'].values):
+                            print(str(ipToPoint(ipAdresses[0])) + ' = ip 1 ')
+                            print(str(ipToPoint(ipAdresses[1])) + ' = ip 2 ')
+                            print(str(ipToPoint(ipAdresses[2])) + ' = ip 3 ')
+                            calculated_pos = targeted_positon(ipToPoint(ipAdresses[0]), ipToPoint(ipAdresses[1]), ipToPoint(ipAdresses[2]), shared_rows[0]['signal strength'].values[0], shared_rows[1]['signal strength'].values[0], shared_rows[2]['signal strength'].values[0], frequency) # ska vara en till med index 2 när alla ankare är anslutna
                         #print(shared_rows)
                         #print(shared_rows[0]['signal strength'].values[0])
                         #print('\n')
                         #print(shared_rows[1]['signal strength'])
                         #print(calculated_pos[0])
-                        if not (calculated_pos == (0,0)):
-                            print(str(shared_rows[0]['source'].values[0]) + ' är beräknad att ligga på ' + str(calculated_pos) + ' och ' + str(inExamRoom(False)))
+                        if not (calculated_pos == (0,0)) and (str(shared_rows[0]['source'].values[0]) =="56:80:d5:37:25:33" or str(shared_rows[1]['source'].values[0]) =="56:80:d5:37:25:33" or str(shared_rows[2]['source'].values[0]) =="56:80:d5:37:25:33"):                         
+                            print(str(shared_rows[0]['source'].values[0]) + ' är beräknad att ligga på ' + str(calculated_pos) + ' och ' + str(inExamRoom(calculated_pos)))
+                            listCalculted.append(calculated_pos)
+                            listInExamRoom.append(inExamRoom(calculated_pos))
+                            listdbm.append(shared_rows[0]['signal strength'].values[0])
+                            listdbm.append(shared_rows[1]['signal strength'].values[0])
+                            listdbm.append(shared_rows[2]['signal strength'].values[0])
                         #print('Signal strength of client : ' + str(i) + ' ' + str(shared_rows[i]['signal strength']))
                 #shared_rows skickas sedan till algoritmen
             
@@ -185,6 +218,12 @@ def client_thread(conn, ip): #queue ska by default vara rekommenderat i multithr
                     data = packet.decode()
                     if data == discStr:
                         print('closing')
+                        a = np.asarray(listdbm)
+                       # b = np.asarray(listInExamRoom)
+                        a.tofile('4.csv',sep=',',format='%10.5f')
+                       # b.tofile('3.csv',sep=',',format='%10.5f')
+                                
+
                         conn.close()
                         break
                 except:
