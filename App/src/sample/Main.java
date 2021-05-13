@@ -8,10 +8,13 @@ import java.awt.*;
 
 public class Main extends Canvas {
 
-    Point point1 = new Point(150,0);
-    Point point2 = new Point(150,280);
-    Point point3 = new Point(280,150);
-    Rss rssAlgorithm = new RssAlgorithm(2417,point1,point2,point3);
+    Point point1 = new Point(0,0);
+    Point point2 = new Point(3,7);
+    Point point3 = new Point(6,0);
+    RssAlgorithm rssAlgorithm = new RssAlgorithm(2417,point1,point2,point3);
+    int[]dbm1 = {-56, -56, -56,55 ,55 ,55 ,52 ,52 ,52 , 54 };
+    int[]dbm2={-42,-42, 42, 42,42 ,42 ,41 ,41 ,41 ,41 };
+    int []dbm3 = {-53,-53,53 , 55,55 ,55 ,53 ,53 , 53, 54};
 
     /**
      * In the main method we created a canvas to present a room as test subject
@@ -22,10 +25,11 @@ public class Main extends Canvas {
 
         JFrame frame = new JFrame("Room");
         Canvas canvas = new Main();
-        canvas.setSize(300,300);
+        canvas.setSize(700,700);
         frame.add(canvas);
         frame.pack();
         frame.setVisible(true);
+
 
     }
 
@@ -35,9 +39,10 @@ public class Main extends Canvas {
      * @param g
      */
     public void paint(Graphics g) {
-        rssAlgorithm.setP1dbm(50);
-        rssAlgorithm.setP2dbm(75);
-        rssAlgorithm.setP3dbm(44);
+        //rssAlgorithm.setP1dbm(50);
+        //rssAlgorithm.setP2dbm(75);
+        //rssAlgorithm.setP3dbm(44);
+      /*
         int m=4;
         int x  =(int) point1.getX();
         int y=(int) point1.getY();
@@ -55,7 +60,7 @@ public class Main extends Canvas {
                 /*
                 x =(int) rssAlgorithm.targetPosition().getX();
                 y=(int) rssAlgorithm.targetPosition().getY();
-*/
+
                // System.out.print(" The Cheater is in position between  " +"("+x+","+y+")" );
             }
             if (m==0){
@@ -63,16 +68,31 @@ public class Main extends Canvas {
                 x =(int) rssAlgorithm.targetPosition(point1).getX();
                 y=(int) rssAlgorithm.targetPosition(point1).getY();
 
-                 */
-                x =(int) rssAlgorithm.targetPosition2().getX();
-                y=(int) rssAlgorithm.targetPosition2().getY();
-                System.out.println(" And   " +"("+x+","+y+")" );
+
+            //    x =(int) rssAlgorithm.targetPosition2().getX();
+              //  y=(int) rssAlgorithm.targetPosition2().getY();
+
             }
-
-
+            */
+test1();
+/*
             g.fillOval(x, y, 15, 15);
             m--;
 
+        }
+*/
+    }
+
+    void test1  (){
+        int a = 0;
+        while (a<dbm1.length){
+            rssAlgorithm.setP1dbm(dbm1[a]);
+            rssAlgorithm.setP2dbm(dbm2[a]);
+            rssAlgorithm.setP3dbm(dbm3[a]);
+      //System.out.println(rssAlgorithm.targetPosition(1)+"between"+rssAlgorithm.targetPosition(2)+""+a);
+            System.out.println(rssAlgorithm.targetPosition2() +""+a);
+
+            a++;
         }
 
     }

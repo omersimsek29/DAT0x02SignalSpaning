@@ -57,23 +57,23 @@ public class RssAlgorithm {
      * @return Point of an (x,Y)
      */
 
-   public Point targetPosition(){
+   public Point targetPosition(int a){
        int d1 = distanceBetweenNodeAndSource(p1dbm);
        int d2 = distanceBetweenNodeAndSource(p2dbm);
        int d3 = distanceBetweenNodeAndSource(p3dbm);
        int y=0;
        int x = 0;
-if (ab1.getY()<ab2.getY()){
-    y = (int) (ab1.getY()+(d1*10));
+if ( a==1){
+    y = (int) (ab1.getY()+(d1));
 
 
-}else if (ab1.getY()>ab2.getY()){
-     y = (int) (ab2.getY()-(d2*10));
+}else if (a==2){
+     y = (int) (ab2.getY()-(d2));
 
 }
   //     System.out.println("y"+y);
 
-        x = (int) (ab3.getX()-(d3*10));
+        x = (int) (ab3.getX()-(d3));
 //       System.out.println("x"+x);
 
        return new Point(x,y);
