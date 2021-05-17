@@ -57,9 +57,11 @@ class Toplevel:
         top.configure(background="#d9d9d9")
         top.configure(highlightbackground="#d9d9d9")
         top.configure(highlightcolor="black")
-
+        
+        root.state('zoomed')
+        
         self.txtTheRoom = tk.Label(top)
-        self.txtTheRoom.place(relx=0.367, rely=0.178, height=31, width=124)
+        self.txtTheRoom.place(relx=0.367, rely=0.22, height=31, width=124)
         self.txtTheRoom.configure(activebackground="#f9f9f9")
         self.txtTheRoom.configure(activeforeground="black")
         self.txtTheRoom.configure(background="#d9d9d9")
@@ -71,8 +73,7 @@ class Toplevel:
         self.txtTheRoom.configure(text='''The Room''')
 
         self.CanvasRoom = tk.Canvas(top)
-        self.CanvasRoom.place(relx=0.367, rely=0.267, relheight=0.384
-                , relwidth=0.205)
+        self.CanvasRoom.place(relx=0.367, rely=0.267, relheight=0.384, relwidth=0.205)
         self.CanvasRoom.configure(background="#d9d9d9")
         self.CanvasRoom.configure(borderwidth="2")
         self.CanvasRoom.configure(highlightbackground="#d9d9d9")
@@ -83,7 +84,7 @@ class Toplevel:
         self.CanvasRoom.configure(selectforeground="white")
 
         self.descriptiontxt = tk.Label(top)
-        self.descriptiontxt.place(relx=0.25, rely=0.667, height=31, width=284)
+        self.descriptiontxt.place(relx=0.367, rely=0.667, height=31, width=284)
         self.descriptiontxt.configure(activebackground="#f9f9f9")
         self.descriptiontxt.configure(activeforeground="black")
         self.descriptiontxt.configure(background="#d9d9d9")
@@ -95,7 +96,7 @@ class Toplevel:
         self.descriptiontxt.configure(text='''Put the access points right here''')
 
         self.nextButton = tk.Button(top)
-        self.nextButton.place(relx=0.367, rely=0.778, height=34, width=120)
+        self.nextButton.place(relx=0.56, rely=0.778, height=34, width=120)
         self.nextButton.configure(activebackground="#ececec")
         self.nextButton.configure(activeforeground="#000000")
         self.nextButton.configure(background="#d9d9d9")
