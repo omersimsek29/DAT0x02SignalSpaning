@@ -23,7 +23,7 @@ def vp_start_gui():
     root = tk.Tk()
     top = firstPage (root)
     Firstpage_support.init(root, top)
-    root.mainloop()
+    root.mainloop() 
 
 w = None
 def create_firstPage(rt, *args, **kwargs):
@@ -60,9 +60,11 @@ class firstPage:
         top.configure(background="#d9d9d9")
         top.configure(highlightbackground="#d9d9d9")
         top.configure(highlightcolor="black")
-
+        
+        root.state('zoomed')
+        
         self.txtWidthLength = tk.Label(top)
-        self.txtWidthLength.place(relx=0.117, rely=0.222, height=84, width=449)
+        self.txtWidthLength.place(relx=0.35, rely=0.222, height=84, width=449)
         self.txtWidthLength.configure(activebackground="#f9f9f9")
         self.txtWidthLength.configure(activeforeground="black")
         self.txtWidthLength.configure(background="#d9d9d9")
@@ -74,7 +76,7 @@ class firstPage:
         self.txtWidthLength.configure(text='''Type in width and length of room''')
 
         self.nextpagebutton1 = tk.Button(top)
-        self.nextpagebutton1.place(relx=0.417, rely=0.578, height=34, width=117)
+        self.nextpagebutton1.place(relx=0.56, rely=0.578, height=34, width=117)
         self.nextpagebutton1.configure(activebackground="#ececec")
         self.nextpagebutton1.configure(activeforeground="#000000")
         self.nextpagebutton1.configure(background="#d9d9d9")
@@ -111,7 +113,7 @@ class firstPage:
         self.givenLength.configure(selectforeground="white")
 
         self.txtWidth = tk.Label(top)
-        self.txtWidth.place(relx=0.267, rely=0.4, height=21, width=64)
+        self.txtWidth.place(relx=0.36, rely=0.4, height=21, width=64)
         self.txtWidth.configure(activebackground="#f9f9f9")
         self.txtWidth.configure(activeforeground="black")
         self.txtWidth.configure(background="#d9d9d9")
@@ -123,7 +125,7 @@ class firstPage:
         self.txtWidth.configure(text='''Width:''')
 
         self.txtLength = tk.Label(top)
-        self.txtLength.place(relx=0.233, rely=0.489, height=21, width=104)
+        self.txtLength.place(relx=0.35, rely=0.489, height=21, width=104)
         self.txtLength.configure(activebackground="#f9f9f9")
         self.txtLength.configure(activeforeground="black")
         self.txtLength.configure(background="#d9d9d9")
@@ -133,6 +135,8 @@ class firstPage:
         self.txtLength.configure(highlightbackground="#d9d9d9")
         self.txtLength.configure(highlightcolor="black")
         self.txtLength.configure(text='''Length:''')
+
+
 
 if __name__ == '__main__':
     vp_start_gui()
