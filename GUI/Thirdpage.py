@@ -60,9 +60,10 @@ class Toplevel1:
         top.configure(background="#d9d9d9")
         top.configure(highlightbackground="#d9d9d9")
         top.configure(highlightcolor="black")
-
+        root.state('zoomed')
+        
         self.givenSSID = tk.Entry(top)
-        self.givenSSID.place(relx=0.45, rely=0.222, height=30, relwidth=0.333)
+        self.givenSSID.place(relx=0.35, rely=0.222, height=30, relwidth=0.333)
         self.givenSSID.configure(background="white")
         self.givenSSID.configure(disabledforeground="#a3a3a3")
         self.givenSSID.configure(font="TkFixedFont")
@@ -74,7 +75,7 @@ class Toplevel1:
         self.givenSSID.configure(selectforeground="white")
 
         self.givenMac1 = tk.Entry(top)
-        self.givenMac1.place(relx=0.45, rely=0.333, height=30, relwidth=0.333)
+        self.givenMac1.place(relx=0.35, rely=0.333, height=30, relwidth=0.333)
         self.givenMac1.configure(background="white")
         self.givenMac1.configure(disabledforeground="#a3a3a3")
         self.givenMac1.configure(font="TkFixedFont")
@@ -86,7 +87,7 @@ class Toplevel1:
         self.givenMac1.configure(selectforeground="white")
 
         self.givenMac2 = tk.Entry(top)
-        self.givenMac2.place(relx=0.45, rely=0.444, height=30, relwidth=0.333)
+        self.givenMac2.place(relx=0.35, rely=0.444, height=30, relwidth=0.333)
         self.givenMac2.configure(background="white")
         self.givenMac2.configure(disabledforeground="#a3a3a3")
         self.givenMac2.configure(font="TkFixedFont")
@@ -98,7 +99,7 @@ class Toplevel1:
         self.givenMac2.configure(selectforeground="white")
 
         self.givenMac3 = tk.Entry(top)
-        self.givenMac3.place(relx=0.45, rely=0.556, height=30, relwidth=0.333)
+        self.givenMac3.place(relx=0.35, rely=0.556, height=30, relwidth=0.333)
         self.givenMac3.configure(background="white")
         self.givenMac3.configure(disabledforeground="#a3a3a3")
         self.givenMac3.configure(font="TkFixedFont")
@@ -110,7 +111,7 @@ class Toplevel1:
         self.givenMac3.configure(selectforeground="white")
 
         self.SSIDtxt = tk.Label(top)
-        self.SSIDtxt.place(relx=0.233, rely=0.222, height=30, width=85)
+        self.SSIDtxt.place(relx=0.3, rely=0.222, height=30, width=85)
         self.SSIDtxt.configure(activebackground="#f9f9f9")
         self.SSIDtxt.configure(activeforeground="black")
         self.SSIDtxt.configure(background="#d9d9d9")
@@ -122,7 +123,7 @@ class Toplevel1:
         self.SSIDtxt.configure(text='''SSID''')
 
         self.mac1txt = tk.Label(top)
-        self.mac1txt.place(relx=0.233, rely=0.333, height=30, width=85)
+        self.mac1txt.place(relx=0.3, rely=0.333, height=30, width=85)
         self.mac1txt.configure(activebackground="#f9f9f9")
         self.mac1txt.configure(activeforeground="black")
         self.mac1txt.configure(background="#d9d9d9")
@@ -134,7 +135,7 @@ class Toplevel1:
         self.mac1txt.configure(text='''Mac 1''')
 
         self.mac2txt = tk.Label(top)
-        self.mac2txt.place(relx=0.233, rely=0.444, height=30, width=85)
+        self.mac2txt.place(relx=0.3, rely=0.444, height=30, width=85)
         self.mac2txt.configure(activebackground="#f9f9f9")
         self.mac2txt.configure(activeforeground="black")
         self.mac2txt.configure(background="#d9d9d9")
@@ -146,7 +147,7 @@ class Toplevel1:
         self.mac2txt.configure(text='''Mac 2''')
 
         self.mac3txt = tk.Label(top)
-        self.mac3txt.place(relx=0.233, rely=0.556, height=30, width=85)
+        self.mac3txt.place(relx=0.3, rely=0.556, height=30, width=85)
         self.mac3txt.configure(activebackground="#f9f9f9")
         self.mac3txt.configure(activeforeground="black")
         self.mac3txt.configure(background="#d9d9d9")
