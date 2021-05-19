@@ -7,6 +7,7 @@ Created on Tue May 18 23:11:12 2021
 
 import tkinter as tk  
 root = tk.Tk() 
+result_output = []
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
