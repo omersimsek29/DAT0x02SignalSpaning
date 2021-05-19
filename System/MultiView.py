@@ -1,0 +1,264 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue May 18 23:11:12 2021
+
+@author: simse
+"""
+
+import tkinter as tk  
+root = tk.Tk() 
+
+class Page(tk.Frame):
+    def __init__(self, *args, **kwargs):
+        tk.Frame.__init__(self, *args, **kwargs)
+    def show(self):
+        self.lift()
+
+class Page1(Page):
+    def __init__(self, *args, **kwargs):
+       Page.__init__(self, *args, **kwargs)
+
+       root.state('zoomed')
+       
+       txtWidthLength = tk.Label(self, text = "Type in width and length of Room")
+       txtWidthLength.place(relx=0.35, rely=0.222, height=84, width=449)
+       txtWidthLength.configure(disabledforeground="#a3a3a3")
+       txtWidthLength.configure(font="-family {Segoe UI} -size 20")
+       txtWidthLength.configure(foreground="#000000")
+       txtWidthLength.configure(highlightbackground="#d9d9d9")
+       txtWidthLength.configure(highlightcolor="black")
+       txtWidthLength.configure(text='''Type in width and length of room''')
+
+
+       givenWidth = tk.Entry(self)
+       givenWidth.place(relx=0.417, rely=0.4, height=24, relwidth=0.2)
+       givenWidth.configure(background="white")
+       givenWidth.configure(disabledforeground="#a3a3a3")
+       givenWidth.configure(font="TkFixedFont")
+       givenWidth.configure(foreground="#000000")
+       givenWidth.configure(highlightbackground="#d9d9d9")
+       givenWidth.configure(highlightcolor="black")
+       givenWidth.configure(insertbackground="black")
+       givenWidth.configure(selectbackground="blue")
+       givenWidth.configure(selectforeground="white")
+
+       givenLength = tk.Entry(self)
+       givenLength.place(relx=0.417, rely=0.489, height=24, relwidth=0.2)
+       givenLength.configure(background="white")
+       givenLength.configure(disabledforeground="#a3a3a3")
+       givenLength.configure(font="TkFixedFont")
+       givenLength.configure(foreground="#000000")
+       givenLength.configure(highlightbackground="#d9d9d9")
+       givenLength.configure(highlightcolor="black")
+       givenLength.configure(insertbackground="black")
+       givenLength.configure(selectbackground="blue")
+       givenLength.configure(selectforeground="white")
+
+       txtWidth = tk.Label(self, text = "Width:")
+       txtWidth.place(relx=0.36, rely=0.4, height=21, width=64)
+       txtWidth.configure(activebackground="#f9f9f9")
+       txtWidth.configure(activeforeground="black")
+       txtWidth.configure(disabledforeground="#a3a3a3")
+       txtWidth.configure(font="-family {Segoe UI} -size 11")
+       txtWidth.configure(foreground="#000000")
+       txtWidth.configure(highlightbackground="#d9d9d9")
+       txtWidth.configure(highlightcolor="black")
+       txtWidth.configure(text='''Width:''')
+
+       txtLength = tk.Label(self, text = "Length:")
+       txtLength.place(relx=0.35, rely=0.489, height=21, width=104)
+       txtLength.configure(activebackground="#f9f9f9")
+       txtLength.configure(activeforeground="black")
+       txtLength.configure(disabledforeground="#a3a3a3")
+       txtLength.configure(font="-family {Segoe UI} -size 11")
+       txtLength.configure(foreground="#000000")
+       txtLength.configure(highlightbackground="#d9d9d9")
+       txtLength.configure(highlightcolor="black")
+       txtLength.configure(text='''Length:''')
+           
+    
+class Page2(Page):
+   def __init__(self, *args, **kwargs):
+       Page.__init__(self, *args, **kwargs)
+       
+       root.state('zoomed')
+        
+       txtTheRoom = tk.Label(self, text = "The Room")
+       txtTheRoom.place(relx=0.367, rely=0.22, height=31, width=124)
+       txtTheRoom.configure(activebackground="#f9f9f9")
+       txtTheRoom.configure(activeforeground="black")
+       txtTheRoom.configure(disabledforeground="#a3a3a3")
+       txtTheRoom.configure(font="-family {Segoe UI} -size 15")
+       txtTheRoom.configure(foreground="#000000")
+       txtTheRoom.configure(highlightbackground="#d9d9d9")
+       txtTheRoom.configure(highlightcolor="black")
+       txtTheRoom.configure(text='''The Room''')
+
+       CanvasRoom = tk.Canvas(self)
+       CanvasRoom.place(relx=0.367, rely=0.267, relheight=0.384, relwidth=0.205)
+       CanvasRoom.configure(borderwidth="2")
+       CanvasRoom.configure(highlightbackground="#d9d9d9")
+       CanvasRoom.configure(highlightcolor="black")
+       CanvasRoom.configure(insertbackground="black")
+       CanvasRoom.configure(relief="ridge")
+       CanvasRoom.configure(selectbackground="blue")
+       CanvasRoom.configure(selectforeground="white")
+
+       descriptiontxt = tk.Label(self, text ="Put the access points right here")
+       descriptiontxt.place(relx=0.367, rely=0.667, height=31, width=284)
+       descriptiontxt.configure(activebackground="#f9f9f9")
+       descriptiontxt.configure(activeforeground="black")
+       descriptiontxt.configure(disabledforeground="#a3a3a3")
+       descriptiontxt.configure(font="-family {Segoe UI} -size 14")
+       descriptiontxt.configure(foreground="#000000")
+       descriptiontxt.configure(highlightbackground="#d9d9d9")
+       descriptiontxt.configure(highlightcolor="black")
+       descriptiontxt.configure(text='''Put the access points right here''')
+         
+
+
+class Page3(Page):
+   def __init__(self, *args, **kwargs):
+       Page.__init__(self, *args, **kwargs)
+
+       givenSSID = tk.Entry(self)
+       givenSSID.place(relx=0.35, rely=0.222, height=30, relwidth=0.333)
+       givenSSID.configure(background="white")
+       givenSSID.configure(disabledforeground="#a3a3a3")
+       givenSSID.configure(font="TkFixedFont")
+       givenSSID.configure(foreground="#000000")
+       givenSSID.configure(highlightbackground="#d9d9d9")
+       givenSSID.configure(highlightcolor="black")
+       givenSSID.configure(insertbackground="black")
+       givenSSID.configure(selectbackground="blue")
+       givenSSID.configure(selectforeground="white")
+
+       givenMac1 = tk.Entry(self)
+       givenMac1.place(relx=0.35, rely=0.333, height=30, relwidth=0.333)
+       givenMac1.configure(background="white")
+       givenMac1.configure(disabledforeground="#a3a3a3")
+       givenMac1.configure(font="TkFixedFont")
+       givenMac1.configure(foreground="#000000")
+       givenMac1.configure(highlightbackground="#d9d9d9")
+       givenMac1.configure(highlightcolor="black")
+       givenMac1.configure(insertbackground="black")
+       givenMac1.configure(selectbackground="blue")
+       givenMac1.configure(selectforeground="white")
+
+       givenMac2 = tk.Entry(self)
+       givenMac2.place(relx=0.35, rely=0.444, height=30, relwidth=0.333)
+       givenMac2.configure(background="white")
+       givenMac2.configure(disabledforeground="#a3a3a3")
+       givenMac2.configure(font="TkFixedFont")
+       givenMac2.configure(foreground="#000000")
+       givenMac2.configure(highlightbackground="#d9d9d9")
+       givenMac2.configure(highlightcolor="black")
+       givenMac2.configure(insertbackground="black")
+       givenMac2.configure(selectbackground="blue")
+       givenMac2.configure(selectforeground="white")
+
+       givenMac3 = tk.Entry(self)
+       givenMac3.place(relx=0.35, rely=0.556, height=30, relwidth=0.333)
+       givenMac3.configure(background="white")
+       givenMac3.configure(disabledforeground="#a3a3a3")
+       givenMac3.configure(font="TkFixedFont")
+       givenMac3.configure(foreground="#000000")
+       givenMac3.configure(highlightbackground="#d9d9d9")
+       givenMac3.configure(highlightcolor="black")
+       givenMac3.configure(insertbackground="black")
+       givenMac3.configure(selectbackground="blue")
+       givenMac3.configure(selectforeground="white")
+
+       SSIDtxt = tk.Label(self, text ="SSID")
+       SSIDtxt.place(relx=0.3, rely=0.222, height=30, width=85)
+       SSIDtxt.configure(activebackground="#f9f9f9")
+       SSIDtxt.configure(activeforeground="black")
+       SSIDtxt.configure(disabledforeground="#a3a3a3")
+       SSIDtxt.configure(font="-family {Segoe UI} -size 11")
+       SSIDtxt.configure(foreground="#000000")
+       SSIDtxt.configure(highlightbackground="#d9d9d9")
+       SSIDtxt.configure(highlightcolor="black")
+       SSIDtxt.configure(text='''SSID''')
+
+       mac1txt = tk.Label(self, text ="MAC 1")
+       mac1txt.place(relx=0.3, rely=0.333, height=30, width=85)
+       mac1txt.configure(activebackground="#f9f9f9")
+       mac1txt.configure(activeforeground="black")
+       mac1txt.configure(disabledforeground="#a3a3a3")
+       mac1txt.configure(font="-family {Segoe UI} -size 11")
+       mac1txt.configure(foreground="#000000")
+       mac1txt.configure(highlightbackground="#d9d9d9")
+       mac1txt.configure(highlightcolor="black")
+       mac1txt.configure(text='''MAC 1''')
+
+       mac2txt = tk.Label(self, text ="MAC 2")
+       mac2txt.place(relx=0.3, rely=0.444, height=30, width=85)
+       mac2txt.configure(activebackground="#f9f9f9")
+       mac2txt.configure(activeforeground="black")
+       mac2txt.configure(disabledforeground="#a3a3a3")
+       mac2txt.configure(font="-family {Segoe UI} -size 11")
+       mac2txt.configure(foreground="#000000")
+       mac2txt.configure(highlightbackground="#d9d9d9")
+       mac2txt.configure(highlightcolor="black")
+       mac2txt.configure(text='''MAC 2''')
+
+       mac3txt = tk.Label(self, text ="MAC 3")
+       mac3txt.place(relx=0.3, rely=0.556, height=30, width=85)
+       mac3txt.configure(activebackground="#f9f9f9")
+       mac3txt.configure(activeforeground="black")
+       mac3txt.configure(disabledforeground="#a3a3a3")
+       mac3txt.configure(font="-family {Segoe UI} -size 11")
+       mac3txt.configure(foreground="#000000")
+       mac3txt.configure(highlightbackground="#d9d9d9")
+       mac3txt.configure(highlightcolor="black")
+       mac3txt.configure(text='''MAC 3''')
+       
+class Page4(Page):
+   def __init__(self, *args, **kwargs):
+       Page.__init__(self, *args, **kwargs)
+       label = tk.Label(self, text="This is page 4")
+       label.pack(side="top", fill="both", expand=True)
+
+class MainView(tk.Frame):
+    def __init__(self, *args, **kwargs):
+        tk.Frame.__init__(self, *args, **kwargs)
+        p1 = Page1(self)
+        p2 = Page2(self)
+        p3 = Page3(self)
+        p4 = Page4(self)
+
+        buttonframe = tk.Frame(self)
+        container = tk.Frame(self)
+        buttonframe.pack(side="top", fill="x", expand=False)
+        container.pack(side="top", fill="both", expand=True)
+        
+        p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        
+        b1 = tk.Button(buttonframe, text="Step 1",font="-family {Segoe UI} -size 13", height=1, width=10, command=p1.lift)
+        b2 = tk.Button(buttonframe, text="Step 2",font="-family {Segoe UI} -size 13", height=1, width=10, command=p2.lift)
+        b3 = tk.Button(buttonframe, text="Step 3",font="-family {Segoe UI} -size 13", height=1, width=10, command=p3.lift)
+        b4 = tk.Button(buttonframe, text="Calculate",font="-family {Segoe UI} -size 13", height=1, width=10, command=p4.lift)
+        
+        b1.pack(side="left")
+        b2.pack(side="left")
+        b3.pack(side="left")
+        b4.pack(side="left")
+        
+        p1.show()
+
+def start_View():
+    main = MainView(root)
+    main.pack(side="top", fill="both", expand=True)
+    root.wm_geometry("400x400")
+    root.mainloop()
+
+start_View()
+#if __name__ == "__main__":
+#    root = tk.Tk()
+#    main = MainView(root)
+#    main.pack(side="top", fill="both", expand=True)
+#    root.wm_geometry("400x400")
+#    root.mainloop()
