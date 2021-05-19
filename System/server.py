@@ -1,3 +1,7 @@
+import os
+#home = expanduser("~")
+os.chdir(r"C:\Users\simse\OneDrive\Skrivbord\DAT0x02SignalSpaning-main\System")
+
 import pickle
 import queue
 import socket
@@ -6,6 +10,7 @@ from math import log10
 import time
 import math
 import numpy as np
+import MultiView as mw
 ### GLOBALS
 
 # noterbart: När ankarna connectar till servern sparas deras ip-adress och det index ankarna
@@ -257,8 +262,9 @@ def connection_thread():
         conn.close()
     except KeyboardInterrupt:
         conn.close()
-    
-    
+        
+        
+mw.start_View()
 main_thread = threading.Thread(target = connection_thread)
 main_thread.start()
 algorithm_thread()
