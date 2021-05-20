@@ -7,21 +7,35 @@ Created on Tue May 18 23:11:12 2021
 import time
 import tkinter as tk  
 root = tk.Tk() 
-result_output = [1,2]
+
+# the result list should be empty when starting the system. The values are
+# example values
+result_output = [(1,2),(3,4)]
 index = 0
+fst = 0
+snd = 0
 ssid = 0
 
+# class page which contains the lift def
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
     def show(self):
         self.lift()
 
+# The first page with its attributes
 class Page1(Page):
     def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
 
-       root.state('zoomed')
+       #for ubuntu fullscreen mode
+       root.attributes('-zoomed', True)
+       
+       #for windows fullscreen mode
+       #root.state('zoomed')
+       
+       #for mac fullscreen mode
+       #root.attributes('-fullscreen', True)
        
        txtWidthLength = tk.Label(self, text = "Type in width and length of Room")
        txtWidthLength.place(relx=0.35, rely=0.222, height=84, width=449)
@@ -31,7 +45,6 @@ class Page1(Page):
        txtWidthLength.configure(highlightbackground="#d9d9d9")
        txtWidthLength.configure(highlightcolor="black")
        txtWidthLength.configure(text='''Type in width and length of room''')
-
 
        self.givenWidth = tk.Entry(self)
        self.givenWidth.place(relx=0.417, rely=0.4, height=24, relwidth=0.2)
@@ -77,14 +90,13 @@ class Page1(Page):
        txtLength.configure(foreground="#000000")
        txtLength.configure(highlightbackground="#d9d9d9")
        txtLength.configure(highlightcolor="black")
-       txtLength.configure(text='''Length:''')
-    
+       txtLength.configure(text='''Length:''') 
+       
+# The second page with its attributes
 class Page2(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
        
-       root.state('zoomed')
-        
        txtTheRoom = tk.Label(self, text = "The Room")
        txtTheRoom.place(relx=0.367, rely=0.22, height=31, width=124)
        txtTheRoom.configure(activebackground="#f9f9f9")
@@ -109,7 +121,6 @@ class Page2(Page):
     outline="#000", fill="")
        CanvasRoom.create_oval(30, 10, 80, 80, outline="#f11",
     fill="", width=1)
-     
     
        descriptiontxt = tk.Label(self, text ="Put the access points right here")
        descriptiontxt.place(relx=0.367, rely=0.667, height=31, width=284)
@@ -123,7 +134,7 @@ class Page2(Page):
        descriptiontxt.configure(text='''Put the access points right here''')
          
 
-
+# The third page with its attributes
 class Page3(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
@@ -243,7 +254,8 @@ class Page3(Page):
        self.mac3 = self.givenMac3.get()
 
        return self.mac3
-    
+
+# The fourth page with its attributes    
 class Page4(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
@@ -266,14 +278,16 @@ class Page4(Page):
    
    def print_result(self):
       global index
-      
+      global fst
+      global snd
       if len(result_output) > index and len(result_output) != 0: 
-          self.Scrolledtext1.insert("end", str(result_output[index]) + "\n")
+          self.Scrolledtext1.insert("end", str(result_output[index]) +  "\n")
           index+=1
-          
+       
+   #   Testing code for the output widget      
    #   self.Scrolledtext1.insert("end", time.ctime() + "\n")
    #   self.Scrolledtext1.see("end")
-       self.after(1000, self.print_result)  
+      self.after(1000, self.print_result)  
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -312,7 +326,7 @@ def start_View():
     root.wm_geometry("400x400")
     root.mainloop()
     
-
+# This function is used so that server.py will be able to start the GUI
 start_View()
 #if __name__ == "__main__":
 #    root = tk.Tk()
