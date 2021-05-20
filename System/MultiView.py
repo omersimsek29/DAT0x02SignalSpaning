@@ -273,7 +273,7 @@ class Page4(Page):
           
    #   self.Scrolledtext1.insert("end", time.ctime() + "\n")
    #   self.Scrolledtext1.see("end")
-   #  self.after(1000, self.print_result)  
+       self.after(1000, self.print_result)  
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
