@@ -23,7 +23,7 @@ randomFilenameLength = 10
 pcapFileNames = []
 csvFileNames = []
 end = False
-host = '192.168.1.103' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
+host = '192.168.0.102' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
 port = 5000
 startStr = 'start'
 quitStr = 'quit'
@@ -64,7 +64,7 @@ def createCSVFromCapture():
     csvFileNames.append(captureFile)
     pcapFileNames.pop(0)
     if end == False:
-        extractFromCsv()
+        extractFromCsv('emils privata')
         createCSVFromCapture()
     else: # om end = True kommer filerna inte tas bort, och filerna kan inte alltid tas bort så här tidigt
         removeFile(home + '/' + captureFile + '.pcap')
@@ -99,6 +99,7 @@ def extractFromCsv(ssid = ''):
 def filterSSID(ssid, data): # data kommer att droppa alla rader som innehåller angivet ssid
     indexes = data[data['wlan.ssid'] == ssid].index
     data.drop(indexes, inplace=True)
+    return data
 
 # Filtrerar bort alla sources förutom angiven source (för att underlätta testning av lokalisering)
 def filterSource(source, data):
@@ -142,9 +143,9 @@ start_thread = threading.Thread(target = waitForStart, args = [mySocket])
 start_thread.start()
 
 #consoleLoop()
-time.sleep(30)
+time.sleep(60)
 
-end = True
+disconnect()
 ### EGNA TANKAR 
 
 # om transformeringen av data tar längre tid än caputring av packet kommer bottleneck problem att uppstå
