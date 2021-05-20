@@ -4,10 +4,12 @@ Created on Tue May 18 23:11:12 2021
 
 @author: simse
 """
-
+import time
 import tkinter as tk  
 root = tk.Tk() 
-result_output = []
+result_output = [1,2]
+index = 0
+ssid = 0
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -31,29 +33,29 @@ class Page1(Page):
        txtWidthLength.configure(text='''Type in width and length of room''')
 
 
-       givenWidth = tk.Entry(self)
-       givenWidth.place(relx=0.417, rely=0.4, height=24, relwidth=0.2)
-       givenWidth.configure(background="white")
-       givenWidth.configure(disabledforeground="#a3a3a3")
-       givenWidth.configure(font="TkFixedFont")
-       givenWidth.configure(foreground="#000000")
-       givenWidth.configure(highlightbackground="#d9d9d9")
-       givenWidth.configure(highlightcolor="black")
-       givenWidth.configure(insertbackground="black")
-       givenWidth.configure(selectbackground="blue")
-       givenWidth.configure(selectforeground="white")
+       self.givenWidth = tk.Entry(self)
+       self.givenWidth.place(relx=0.417, rely=0.4, height=24, relwidth=0.2)
+       self.givenWidth.configure(background="white")
+       self.givenWidth.configure(disabledforeground="#a3a3a3")
+       self.givenWidth.configure(font="TkFixedFont")
+       self.givenWidth.configure(foreground="#000000")
+       self.givenWidth.configure(highlightbackground="#d9d9d9")
+       self.givenWidth.configure(highlightcolor="black")
+       self.givenWidth.configure(insertbackground="black")
+       self.givenWidth.configure(selectbackground="blue")
+       self.givenWidth.configure(selectforeground="white")
 
-       givenLength = tk.Entry(self)
-       givenLength.place(relx=0.417, rely=0.489, height=24, relwidth=0.2)
-       givenLength.configure(background="white")
-       givenLength.configure(disabledforeground="#a3a3a3")
-       givenLength.configure(font="TkFixedFont")
-       givenLength.configure(foreground="#000000")
-       givenLength.configure(highlightbackground="#d9d9d9")
-       givenLength.configure(highlightcolor="black")
-       givenLength.configure(insertbackground="black")
-       givenLength.configure(selectbackground="blue")
-       givenLength.configure(selectforeground="white")
+       self.givenLength = tk.Entry(self)
+       self.givenLength.place(relx=0.417, rely=0.489, height=24, relwidth=0.2)
+       self.givenLength.configure(background="white")
+       self.givenLength.configure(disabledforeground="#a3a3a3")
+       self.givenLength.configure(font="TkFixedFont")
+       self.givenLength.configure(foreground="#000000")
+       self.givenLength.configure(highlightbackground="#d9d9d9")
+       self.givenLength.configure(highlightcolor="black")
+       self.givenLength.configure(insertbackground="black")
+       self.givenLength.configure(selectbackground="blue")
+       self.givenLength.configure(selectforeground="white")
 
        txtWidth = tk.Label(self, text = "Width:")
        txtWidth.place(relx=0.36, rely=0.4, height=21, width=64)
@@ -76,7 +78,6 @@ class Page1(Page):
        txtLength.configure(highlightbackground="#d9d9d9")
        txtLength.configure(highlightcolor="black")
        txtLength.configure(text='''Length:''')
-           
     
 class Page2(Page):
    def __init__(self, *args, **kwargs):
@@ -104,7 +105,12 @@ class Page2(Page):
        CanvasRoom.configure(relief="ridge")
        CanvasRoom.configure(selectbackground="blue")
        CanvasRoom.configure(selectforeground="white")
-
+       CanvasRoom.create_rectangle(30, 10, 360, 360,
+    outline="#000", fill="")
+       CanvasRoom.create_oval(30, 10, 80, 80, outline="#f11",
+    fill="", width=1)
+     
+    
        descriptiontxt = tk.Label(self, text ="Put the access points right here")
        descriptiontxt.place(relx=0.367, rely=0.667, height=31, width=284)
        descriptiontxt.configure(activebackground="#f9f9f9")
@@ -121,54 +127,58 @@ class Page2(Page):
 class Page3(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
+       self.ssid="" 
+       self.mac1=""
+       self.mac2 =""
+       self.mac3=""
+       
+       self.givenSSID = tk.Entry(self)
+       self.givenSSID.place(relx=0.35, rely=0.222, height=30, relwidth=0.333)
+       self.givenSSID.configure(background="white")
+       self.givenSSID.configure(disabledforeground="#a3a3a3")
+       self.givenSSID.configure(font="TkFixedFont")
+       self.givenSSID.configure(foreground="#000000")
+       self.givenSSID.configure(highlightbackground="#d9d9d9")
+       self.givenSSID.configure(highlightcolor="black")
+       self.givenSSID.configure(insertbackground="black")
+       self.givenSSID.configure(selectbackground="blue")
+       self.givenSSID.configure(selectforeground="white")
 
-       givenSSID = tk.Entry(self)
-       givenSSID.place(relx=0.35, rely=0.222, height=30, relwidth=0.333)
-       givenSSID.configure(background="white")
-       givenSSID.configure(disabledforeground="#a3a3a3")
-       givenSSID.configure(font="TkFixedFont")
-       givenSSID.configure(foreground="#000000")
-       givenSSID.configure(highlightbackground="#d9d9d9")
-       givenSSID.configure(highlightcolor="black")
-       givenSSID.configure(insertbackground="black")
-       givenSSID.configure(selectbackground="blue")
-       givenSSID.configure(selectforeground="white")
+       self.givenMac1 = tk.Entry(self)
+       self.givenMac1.place(relx=0.35, rely=0.333, height=30, relwidth=0.333)
+       self.givenMac1.configure(background="white")
+       self.givenMac1.configure(disabledforeground="#a3a3a3")
+       self.givenMac1.configure(font="TkFixedFont")
+       self.givenMac1.configure(foreground="#000000")
+       self.givenMac1.configure(highlightbackground="#d9d9d9")
+       self.givenMac1.configure(highlightcolor="black")
+       self.givenMac1.configure(insertbackground="black")
+       self.givenMac1.configure(selectbackground="blue")
+       self.givenMac1.configure(selectforeground="white")
 
-       givenMac1 = tk.Entry(self)
-       givenMac1.place(relx=0.35, rely=0.333, height=30, relwidth=0.333)
-       givenMac1.configure(background="white")
-       givenMac1.configure(disabledforeground="#a3a3a3")
-       givenMac1.configure(font="TkFixedFont")
-       givenMac1.configure(foreground="#000000")
-       givenMac1.configure(highlightbackground="#d9d9d9")
-       givenMac1.configure(highlightcolor="black")
-       givenMac1.configure(insertbackground="black")
-       givenMac1.configure(selectbackground="blue")
-       givenMac1.configure(selectforeground="white")
+       self.givenMac2 = tk.Entry(self)
+       self.givenMac2.place(relx=0.35, rely=0.444, height=30, relwidth=0.333)
+       self.givenMac2.configure(background="white")
+       self.givenMac2.configure(disabledforeground="#a3a3a3")
+       self.givenMac2.configure(font="TkFixedFont")
+       self.givenMac2.configure(foreground="#000000")
+       self.givenMac2.configure(highlightbackground="#d9d9d9")
+       self.givenMac2.configure(highlightcolor="black")
+       self.givenMac2.configure(insertbackground="black")
+       self.givenMac2.configure(selectbackground="blue")
+       self.givenMac2.configure(selectforeground="white")
 
-       givenMac2 = tk.Entry(self)
-       givenMac2.place(relx=0.35, rely=0.444, height=30, relwidth=0.333)
-       givenMac2.configure(background="white")
-       givenMac2.configure(disabledforeground="#a3a3a3")
-       givenMac2.configure(font="TkFixedFont")
-       givenMac2.configure(foreground="#000000")
-       givenMac2.configure(highlightbackground="#d9d9d9")
-       givenMac2.configure(highlightcolor="black")
-       givenMac2.configure(insertbackground="black")
-       givenMac2.configure(selectbackground="blue")
-       givenMac2.configure(selectforeground="white")
-
-       givenMac3 = tk.Entry(self)
-       givenMac3.place(relx=0.35, rely=0.556, height=30, relwidth=0.333)
-       givenMac3.configure(background="white")
-       givenMac3.configure(disabledforeground="#a3a3a3")
-       givenMac3.configure(font="TkFixedFont")
-       givenMac3.configure(foreground="#000000")
-       givenMac3.configure(highlightbackground="#d9d9d9")
-       givenMac3.configure(highlightcolor="black")
-       givenMac3.configure(insertbackground="black")
-       givenMac3.configure(selectbackground="blue")
-       givenMac3.configure(selectforeground="white")
+       self.givenMac3 = tk.Entry(self)
+       self.givenMac3.place(relx=0.35, rely=0.556, height=30, relwidth=0.333)
+       self.givenMac3.configure(background="white")
+       self.givenMac3.configure(disabledforeground="#a3a3a3")
+       self.givenMac3.configure(font="TkFixedFont")
+       self.givenMac3.configure(foreground="#000000")
+       self.givenMac3.configure(highlightbackground="#d9d9d9")
+       self.givenMac3.configure(highlightcolor="black")
+       self.givenMac3.configure(insertbackground="black")
+       self.givenMac3.configure(selectbackground="blue")
+       self.givenMac3.configure(selectforeground="white")
 
        SSIDtxt = tk.Label(self, text ="SSID")
        SSIDtxt.place(relx=0.3, rely=0.222, height=30, width=85)
@@ -213,12 +223,57 @@ class Page3(Page):
        mac3txt.configure(highlightbackground="#d9d9d9")
        mac3txt.configure(highlightcolor="black")
        mac3txt.configure(text='''MAC 3''')
+   
+   def get_ssid(self):
+       self.ssid = self.givenSSID.get()
        
+       print(str(self.ssid))
+   
+   def get_mac1(self):
+        self.mac1 = self.givenMac1.get()
+        
+        return self.mac1
+    
+   def get_mac2(self):
+       self.mac2 = self.givenMac2.get()
+       
+       return self.mac2
+   
+   def get_mac3(self):
+       self.mac3 = self.givenMac3.get()
+
+       return self.mac3
+    
 class Page4(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-       label = tk.Label(self, text="This is page 4")
-       label.pack(side="top", fill="both", expand=True)
+      
+       self.Scrolledtext1 = tk.Text(self)
+       self.vsb = tk.Scrollbar(self, orient="vertical", command=self.Scrolledtext1.yview)
+       self.Scrolledtext1.configure(yscrollcommand=self.vsb.set)
+       self.vsb.pack(side="right", fill="y")
+       self.Scrolledtext1.place(relx=0.083, rely=0.133, relheight=0.744, relwidth=0.417)
+
+       self.Canvas1 = tk.Canvas(self)
+       self.Canvas1.place(relx=0.517, rely=0.133, relheight=0.744, relwidth=0.417)
+       self.Canvas1.configure(background="#d9d9d9")
+       self.Canvas1.configure(borderwidth="2")
+       self.Canvas1.configure(insertbackground="black")
+       self.Canvas1.configure(relief="ridge")
+       self.Canvas1.configure(selectbackground="blue")
+       self.Canvas1.configure(selectforeground="white")
+       self.print_result()
+   
+   def print_result(self):
+      global index
+      
+      if len(result_output) > index and len(result_output) != 0: 
+          self.Scrolledtext1.insert("end", str(result_output[index]) + "\n")
+          index+=1
+          
+   #   self.Scrolledtext1.insert("end", time.ctime() + "\n")
+   #   self.Scrolledtext1.see("end")
+   #  self.after(1000, self.print_result)  
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -241,6 +296,7 @@ class MainView(tk.Frame):
         b1 = tk.Button(buttonframe, text="Step 1",font="-family {Segoe UI} -size 13", height=1, width=10, command=p1.lift)
         b2 = tk.Button(buttonframe, text="Step 2",font="-family {Segoe UI} -size 13", height=1, width=10, command=p2.lift)
         b3 = tk.Button(buttonframe, text="Step 3",font="-family {Segoe UI} -size 13", height=1, width=10, command=p3.lift)
+        # Den här knappen borde se till att spara värden från page3, get funktionerna längst ner i page3
         b4 = tk.Button(buttonframe, text="Calculate",font="-family {Segoe UI} -size 13", height=1, width=10, command=p4.lift)
         
         b1.pack(side="left")
@@ -255,6 +311,7 @@ def start_View():
     main.pack(side="top", fill="both", expand=True)
     root.wm_geometry("400x400")
     root.mainloop()
+    
 
 start_View()
 #if __name__ == "__main__":
