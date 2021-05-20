@@ -83,7 +83,7 @@ def algorithm_thread():
                             print(str(ipToPoint(ipAdresses[0])) + ' = ip 1 ')
                             print(str(ipToPoint(ipAdresses[1])) + ' = ip 2 ')
                             print(str(ipToPoint(ipAdresses[2])) + ' = ip 3 ')
-                            calculated_pos = targeted_positon(ipToPoint(ipAdresses[0]), ipToPoint(ipAdresses[1]), ipToPoint(ipAdresses[2]), shared_rows[0]['signal strength'].values[0], shared_rows[1]['signal strength'].values[0], shared_rows[2]['signal strength'].values[0], frequency) # ska vara en till med index 2 när alla ankare är anslutna
+                            calculated_pos = targeted_positon(ipToPoint(ipAdresses[0]), ipToPoint(ipAdresses[1]), ipToPoint(ipAdresses[2]), shared_rows[0]['signal strength'].values[0], shared_rows[1]['signal strength'].values[0], shared_rows[2]['signal strength'].values[0], shared_rows[0]['frequency'].values[0]) # ska vara en till med index 2 när alla ankare är anslutna
                         #print(shared_rows)
                         #print(shared_rows[0]['signal strength'].values[0])
                         #print('\n')
@@ -91,6 +91,7 @@ def algorithm_thread():
                         #print(calculated_pos[0])
                         if not (calculated_pos == (0,0)) and (str(shared_rows[0]['source'].values[0]) =="56:80:d5:37:25:33" or str(shared_rows[1]['source'].values[0]) =="56:80:d5:37:25:33" or str(shared_rows[2]['source'].values[0]) =="56:80:d5:37:25:33"):                         
                             print(str(shared_rows[0]['source'].values[0]) + ' är beräknad att ligga på ' + str(calculated_pos) + ' och ' + str(inExamRoom(calculated_pos)))
+                            mw.result_output.append((shared_rows[0]['source'].values[0], calculated_pos))
                             listCalculted.append(calculated_pos)
                             listInExamRoom.append(inExamRoom(calculated_pos))
                             listdbm.append(shared_rows[0]['signal strength'].values[0])

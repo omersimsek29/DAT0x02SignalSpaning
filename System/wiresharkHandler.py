@@ -60,7 +60,8 @@ def createCSVFromCapture():
     while(len(pcapFileNames) == 0): # gör detta pga jag är osäker på om ett race condition kan uppstå eller ej, lade till detta för att undvika det
         time.sleep(0.1)
     captureFile = pcapFileNames[0]
-    os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.da -e wlan.sa -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ra -e wlan.ta > ' + captureFile + '.csv')
+    #os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.da -e wlan.sa -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ra -e wlan.ta > ' + captureFile + '.csv')
+    os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ta -e wlan_radio.frequency -e wlan_radio.noise_dbm> ' + captureFile + '.csv')
     csvFileNames.append(captureFile)
     pcapFileNames.pop(0)
     if end == False:
@@ -83,13 +84,13 @@ def extractFromCsv(ssid = ''):
     filename = csvFileNames.pop(0)
     removeFile(home + '/' + filename + '.csv')
     removeFile(home + '/' + filename + '.pcap')
-    extracted_data = pd.DataFrame(columns=['source', 'signal strength', 'packets'])
+    extracted_data = pd.DataFrame(columns=['source', 'signal strength', 'packets', 'frequency', 'noise'])
     if ssid != '' :
         wireshark_data = filterSSID(ssid, wireshark_data)
     for index, row in wireshark_data.iterrows():
         if (not pd.isna(wireshark_data.iloc[index]['wlan.ta'])) and (not (wireshark_data.iloc[index]['wlan.ta'] in extracted_data['source'].values)):
             nf = wireshark_data.loc[wireshark_data['wlan.ta'] == wireshark_data.iloc[index]['wlan.ta']]
-            extracted_data = extracted_data.append({'source': wireshark_data.iloc[index]['wlan.ta'], 'signal strength': nf['wlan_radio.signal_dbm'].mean(), 'packets' : len(nf)}, ignore_index=True)
+            extracted_data = extracted_data.append({'source': wireshark_data.iloc[index]['wlan.ta'], 'signal strength': nf['wlan_radio.signal_dbm'].mean(), 'packets' : len(nf), 'frequency': nf['frequency'].mean(), 'noise': nf['noise'].mean()}, ignore_index=True)
     print('Done with extracting data')
     print(extracted_data)
     data = pickle.dumps(extracted_data)
