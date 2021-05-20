@@ -23,8 +23,8 @@ randomFilenameLength = 10
 pcapFileNames = []
 csvFileNames = []
 end = False
-host = '192.168.0.102' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
-port = 5000
+host = '192.168.1.105' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
+port = 5001
 startStr = 'start'
 quitStr = 'quit'
 semaphore = threading.Semaphore(0)
@@ -60,8 +60,7 @@ def createCSVFromCapture():
     while(len(pcapFileNames) == 0): # gör detta pga jag är osäker på om ett race condition kan uppstå eller ej, lade till detta för att undvika det
         time.sleep(0.1)
     captureFile = pcapFileNames[0]
-    #os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.da -e wlan.sa -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ra -e wlan.ta > ' + captureFile + '.csv')
-    os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ta -e wlan_radio.frequency -e wlan_radio.noise_dbm> ' + captureFile + '.csv')
+    os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.da -e wlan.sa -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ra -e wlan.ta > ' + captureFile + '.csv')
     csvFileNames.append(captureFile)
     pcapFileNames.pop(0)
     if end == False:
@@ -84,13 +83,13 @@ def extractFromCsv(ssid = ''):
     filename = csvFileNames.pop(0)
     removeFile(home + '/' + filename + '.csv')
     removeFile(home + '/' + filename + '.pcap')
-    extracted_data = pd.DataFrame(columns=['source', 'signal strength', 'packets', 'frequency', 'noise'])
+    extracted_data = pd.DataFrame(columns=['source', 'signal strength', 'packets'])
     if ssid != '' :
         wireshark_data = filterSSID(ssid, wireshark_data)
     for index, row in wireshark_data.iterrows():
         if (not pd.isna(wireshark_data.iloc[index]['wlan.ta'])) and (not (wireshark_data.iloc[index]['wlan.ta'] in extracted_data['source'].values)):
             nf = wireshark_data.loc[wireshark_data['wlan.ta'] == wireshark_data.iloc[index]['wlan.ta']]
-            extracted_data = extracted_data.append({'source': wireshark_data.iloc[index]['wlan.ta'], 'signal strength': nf['wlan_radio.signal_dbm'].mean(), 'packets' : len(nf), 'frequency': nf['frequency'].mean(), 'noise': nf['noise'].mean()}, ignore_index=True)
+            extracted_data = extracted_data.append({'source': wireshark_data.iloc[index]['wlan.ta'], 'signal strength': nf['wlan_radio.signal_dbm'].mean(), 'packets' : len(nf)}, ignore_index=True)
     print('Done with extracting data')
     print(extracted_data)
     data = pickle.dumps(extracted_data)
