@@ -34,6 +34,7 @@ frequency = 2422
 listCalculted = []
 listInExamRoom=[]
 listdbm = []
+results = []
 
 
   
@@ -92,6 +93,7 @@ def algorithm_thread():
                         if not (calculated_pos == (0,0)) and (str(shared_rows[0]['source'].values[0]) =="56:80:d5:37:25:33" or str(shared_rows[1]['source'].values[0]) =="56:80:d5:37:25:33" or str(shared_rows[2]['source'].values[0]) =="56:80:d5:37:25:33"):                         
                             print(str(shared_rows[0]['source'].values[0]) + ' är beräknad att ligga på ' + str(calculated_pos) + ' och ' + str(inExamRoom(calculated_pos)))
                             mw.result_output.append((shared_rows[0]['source'].values[0], calculated_pos))
+                            results.append((shared_rows[0]['source'].values[0], calculated_pos))
                             listCalculted.append(calculated_pos)
                             listInExamRoom.append(inExamRoom(calculated_pos))
                             listdbm.append(shared_rows[0]['signal strength'].values[0])
@@ -154,8 +156,18 @@ def connection_thread():
     except KeyboardInterrupt:
         conn.close()
         
+def graphic_thread(): # skriv om multiview till en stor klass som innehåller allt, börja i ett första steg att bara ta resultat sidan eventuellt och koppla in resten efter
+    # UI = createUI()
+    #while True:
+        #if len(results) > 0:
+            #updateUI()
+    print('pseduo kod')
+    
         
-mw.start_View()
+graphic_thread = threading.Thread(target = graphic_thread)
+graphic_thread.start()
+
+mw.start_View() # kommentera bort när pseudo kod är tillagd
 main_thread = threading.Thread(target = connection_thread)
 main_thread.start()
 algorithm_thread()
