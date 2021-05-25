@@ -16,6 +16,7 @@ fst = 0
 snd = 0
 ssid = 0
 
+
 # class page which contains the lift def
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -29,10 +30,10 @@ class Page1(Page):
        Page.__init__(self, *args, **kwargs)
 
        #for ubuntu fullscreen mode
-       root.attributes('-zoomed', True)
+       #root.attributes('-zoomed', True)
        
        #for windows fullscreen mode
-       #root.state('zoomed')
+       root.state('zoomed')
        
        #for mac fullscreen mode
        #root.attributes('-fullscreen', True)
@@ -257,9 +258,9 @@ class Page3(Page):
 
 # The fourth page with its attributes    
 class Page4(Page):
-   def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-      
+       
        self.Scrolledtext1 = tk.Text(self)
        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.Scrolledtext1.yview)
        self.Scrolledtext1.configure(yscrollcommand=self.vsb.set)
@@ -274,44 +275,49 @@ class Page4(Page):
        self.Canvas1.configure(relief="ridge")
        self.Canvas1.configure(selectbackground="blue")
        self.Canvas1.configure(selectforeground="white")
-       self.print_result()
+       self.print_result("Datainsamling påbörjas...")
    
-   def print_result(self):
-      global index
-      global fst
-      global snd
-      if len(result_output) > index and len(result_output) != 0: 
-          self.Scrolledtext1.insert("end", str(result_output[index]) +  "\n")
-          index+=1
+    def print_result(self, data):
+      #global index
+      #global fst
+     # global snd
+      #if len(result_output) > index and len(result_output) != 0: 
+       self.Scrolledtext1.insert("end", str(data) +  "\n")
+       
+          #index+=1
        
    #   Testing code for the output widget      
    #   self.Scrolledtext1.insert("end", time.ctime() + "\n")
    #   self.Scrolledtext1.see("end")
-      self.after(1000, self.print_result)  
+      #self.after(1000, self.print_result)  
 
 class MainView(tk.Frame):
+    printList = []
+    start = False
+    root2 = root
+
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
         p1 = Page1(self)
         p2 = Page2(self)
         p3 = Page3(self)
-        p4 = Page4(self)
+        self.p4 = Page4(self)
 
         buttonframe = tk.Frame(self)
         container = tk.Frame(self)
         buttonframe.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
-        
+
         p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
-        p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        self.p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         
         b1 = tk.Button(buttonframe, text="Step 1",font="-family {Segoe UI} -size 13", height=1, width=10, command=p1.lift)
         b2 = tk.Button(buttonframe, text="Step 2",font="-family {Segoe UI} -size 13", height=1, width=10, command=p2.lift)
         b3 = tk.Button(buttonframe, text="Step 3",font="-family {Segoe UI} -size 13", height=1, width=10, command=p3.lift)
         # Den här knappen borde se till att spara värden från page3, get funktionerna längst ner i page3
-        b4 = tk.Button(buttonframe, text="Calculate",font="-family {Segoe UI} -size 13", height=1, width=10, command=p4.lift)
+        b4 = tk.Button(buttonframe, text="Calculate",font="-family {Segoe UI} -size 13", height=1, width=10, command=self.p4.lift)
         
         b1.pack(side="left")
         b2.pack(side="left")
@@ -319,15 +325,15 @@ class MainView(tk.Frame):
         b4.pack(side="left")
         
         p1.show()
-
-def start_View():
-    main = MainView(root)
-    main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("400x400")
-    root.mainloop()
+    def start_View(self):
+        main = MainView(root)
+        main.pack(side="top", fill="both", expand=True)
+        root.wm_geometry("400x400")
+        
+        #root.mainloop()
     
 # This function is used so that server.py will be able to start the GUI
-start_View()
+#start_View()
 #if __name__ == "__main__":
 #    root = tk.Tk()
 #    main = MainView(root)
