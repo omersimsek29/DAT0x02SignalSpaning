@@ -9,6 +9,7 @@ import threading
 import time
 import numpy as np
 import MultiView as mw
+import tkinter as tk 
 
 ### GLOBALS
 
@@ -35,6 +36,7 @@ listCalculted = []
 listInExamRoom=[]
 listdbm = []
 results = []
+root = tk.Tk() 
 
 
   
@@ -162,14 +164,32 @@ def graphic_thread(): # skriv om multiview till en stor klass som innehåller al
         #if len(results) > 0:
             #updateUI()
     print('pseduo kod')
-    
+def graphic_thread(): # skriv om multiview till en stor klass som innehåller allt, börja i ett första steg att bara ta resultat sidan eventuellt och koppla in resten efter
+    # UI = createUI()
+    view = mw.MainView(root)
+    view.pack(side="top", fill="both", expand=True)
+    root.wm_geometry("400x400")
+    #view.start_View()
+    print('före')
+    #view.after(1000, test(view))
+    test(view)
+    print('efter')
+    root.mainloop()
+def test(view):
+   # print('före if')
+    if len(results) > 0:
+        print('här')
+        #view.p4.print_result('tja')
+        view.p4.print_result(results.pop(0))
+        #view.after(1000, test(view))
+    view.p4.after(1000, test, view)
+        #updateUI()    
         
-graphic_thread = threading.Thread(target = graphic_thread)
-graphic_thread.start()
-
-mw.start_View() # kommentera bort när pseudo kod är tillagd
 main_thread = threading.Thread(target = connection_thread)
 main_thread.start()
-algorithm_thread()
+algoritm_thread = threading.Thread(target = algorithm_thread)
+algoritm_thread.start()
+
+graphic_thread()
 #if __name__ == '__main__':
   #  Main()
