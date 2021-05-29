@@ -23,7 +23,7 @@ randomFilenameLength = 10
 pcapFileNames = []
 csvFileNames = []
 end = False
-host = '192.168.1.105' #Detta är min hem ip-adress, dock tror jag det är den lokala ip-adressen eftersom what'smyipadress.com ger mig en annan
+host = '192.168.1.105' #Hårdkodad ip-adress till server som måste anges
 port = 5001
 startStr = 'start'
 quitStr = 'quit'
@@ -40,36 +40,37 @@ mySocket.connect((host,port))
 
 #capturear och sparar med slumpmässigt namn som pcap
 def captureAndSave(duration, packets, interfaceIndex):
-    home = expanduser("~") # gör detta igen för att vara övertydlig, räcker att köra en gång globalt egentligen
-    os.chdir(home)
+    home = expanduser("~") # kan förmodligen tas bort utan problem, men har inte möjlighet att testa så vågar inte ändra. 
+    os.chdir(home) # kan förmodligen tas bort utan problem, men har inte möjlighet att testa så vågar inte ändra. 
     filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(randomFilenameLength))
     # säkerställ att airmon körs, om 0 packet captureas är det troligen pga det
-    os.system('tshark -i' + str(interfaceIndex) + ' -w ' + filename + '.pcap -a duration:' + str(duration) + ' -a packets:' + str(packets))
-    pcapFileNames.append(filename)
-    semaphore.release()
-    if end == False:
+    os.system('tshark -i' + str(interfaceIndex) + ' -w ' + filename + '.pcap -a duration:' + str(duration) + ' -a packets:' + str(packets)) # kör wireshark capture en viss duration eller antal packet, beroende på vad som sker först. 
+    pcapFileNames.append(filename) # sparar filnamnen som använts för pcap
+    semaphore.release() # semaforen signalerar att pcap filen är klar och att den går att göra om till csv fil.
+    if end == False: # om end == True --> avsluta program
         captureAndSave(duration, packets, interfaceIndex)
     else:     
         removeFile(home + '/' + filename + '.pcap')
 
 #skapar en csv med samma namn som pcap filen med vissa intressanta fält enbart.
 def createCSVFromCapture(): 
-    home = expanduser("~")
-    os.chdir(home)
-    semaphore.acquire()
+    home = expanduser("~") # kan förmodligen tas bort utan problem, men har inte möjlighet att testa så vågar inte ändra. 
+    os.chdir(home) # kan förmodligen tas bort utan problem, men har inte möjlighet att testa så vågar inte ändra. 
+    semaphore.acquire() # då pcap filen är färdig fortsätter koden
     while(len(pcapFileNames) == 0): # gör detta pga jag är osäker på om ett race condition kan uppstå eller ej, lade till detta för att undvika det
         time.sleep(0.1)
     captureFile = pcapFileNames[0]
-    os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.da -e wlan.sa -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ra -e wlan.ta > ' + captureFile + '.csv')
-    csvFileNames.append(captureFile)
+    os.system('tshark -r ' + captureFile + '.pcap -o\'column.format:"Dport","%D","Protocol","%p"\' -T fields -E separator=, -E header=y -e wlan.da -e wlan.sa -e wlan.ssid -e wlan_radio.signal_dbm -e wlan.ra -e wlan.ta > ' + captureFile + '.csv') # går pcap till csv fil med intressanta fält för oss
+    csvFileNames.append(captureFile) # använder samma namn som pcap fast .csv
     pcapFileNames.pop(0)
     if end == False:
-        extractFromCsv('emils privata')
-        createCSVFromCapture()
+        extractFromCsv('emils privata') # skickar data till server och tar bort angivet ssid
+        createCSVFromCapture() # upprepar processen att skapa csv filer från pcap
     else: # om end = True kommer filerna inte tas bort, och filerna kan inte alltid tas bort så här tidigt
         removeFile(home + '/' + captureFile + '.pcap')
         removeFile(home + '/' + captureFile + '.csv')
 
+# tar bort en fil med given path
 def removeFile(path):
     if os.path.exists(path):
         os.remove(path)
@@ -78,10 +79,12 @@ def removeFile(path):
 def extractFromCsv(ssid = ''):
     while(len(csvFileNames) == 0):
         time.sleep(0.1)
+    # går om csv till dataframe
     wireshark_data = pd.read_csv(home + '/' + csvFileNames[0] + '.csv') # kanske ska lägga till errorbadllines = False
     #filterSource("c0:ee:fb:89:a6:cf", wireshark_data)
     filename = csvFileNames.pop(0)
-    removeFile(home + '/' + filename + '.csv')
+    # tar bort filerna som skapats
+    removeFile(home + '/' + filename + '.csv') 
     removeFile(home + '/' + filename + '.pcap')
     extracted_data = pd.DataFrame(columns=['source', 'signal strength', 'packets'])
     if ssid != '' :
@@ -89,11 +92,11 @@ def extractFromCsv(ssid = ''):
     for index, row in wireshark_data.iterrows():
         if (not pd.isna(wireshark_data.iloc[index]['wlan.ta'])) and (not (wireshark_data.iloc[index]['wlan.ta'] in extracted_data['source'].values)):
             nf = wireshark_data.loc[wireshark_data['wlan.ta'] == wireshark_data.iloc[index]['wlan.ta']]
-            extracted_data = extracted_data.append({'source': wireshark_data.iloc[index]['wlan.ta'], 'signal strength': nf['wlan_radio.signal_dbm'].mean(), 'packets' : len(nf)}, ignore_index=True)
+            extracted_data = extracted_data.append({'source': wireshark_data.iloc[index]['wlan.ta'], 'signal strength': nf['wlan_radio.signal_dbm'].mean(), 'packets' : len(nf)}, ignore_index=True) # gör i ordning den extraherade data och beräknar medelvärde för signalstyrka
     print('Done with extracting data')
     print(extracted_data)
-    data = pickle.dumps(extracted_data)
-    sendData(data)
+    data = pickle.dumps(extracted_data) # serializerar data
+    sendData(data) # skickar data
 
 #Filtrerar bort angivet ssid från dataframe(obs måste innehålla wlan.ssid fältet som fås från ursprungs csvn)
 def filterSSID(ssid, data): # data kommer att droppa alla rader som innehåller angivet ssid
@@ -131,7 +134,7 @@ def startAllThreads():
     capture_thread.start()
     extraction_thread.start()
     
-# simulering av gränssnitt, för att underläta körning under godtycklig tid. 
+# ankarloop som pågår tills programmet avslutas 
 def consoleLoop():
     while True:
         input_line = input()
@@ -142,8 +145,8 @@ def consoleLoop():
 start_thread = threading.Thread(target = waitForStart, args = [mySocket])
 start_thread.start()
 
-#consoleLoop()
-time.sleep(60)
+consoleLoop() # kör captures tills keyboardinteruppt eller användare avslutar server eller ankare
+#time.sleep(60)
 
 disconnect()
 ### EGNA TANKAR 
@@ -151,32 +154,6 @@ disconnect()
 # om transformeringen av data tar längre tid än caputring av packet kommer bottleneck problem att uppstå
 # de tillfälliga filerna som skapas får jag inte glömma att ta bort efter(sparar atm för att se resultaten lättare)
 
-"""
-Kommunikation mellan datorer
 
-
-När en klient disconnectar kommer den inte kunna återansluta, så att servern stänger connectionen om någon
-tid har gått ifall klienten kraschat samt eventuellt också att vid medveten disconnect kanske informera
-servern om det
-
-Fixa så att signal styrkor med matchande mac-adresser plockas ut och skickas till algoritmen
-
-
------------------------
-
-Lokalisering av ankare
-
------------------------
-
-Grafiskt gränssnitt
-
-----------------------
-
-Eventuellt fingerprinting av alla datorer och signaler som vi använder vid behov
-
-Kolla vidare på detta, kanske med hjälp av app(kamera, gps, stegräknare, eller annan inbyggd funktion)
-
-
-"""
 
 
