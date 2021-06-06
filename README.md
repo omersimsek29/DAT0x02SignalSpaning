@@ -10,6 +10,7 @@ This repository is from our bachelor thesis, "Detection and localization of illi
 * Wi-Fi 2.4 router
 * Ethernet cable 
 * Wireshark (latest version)
+* Airmon-ng
 
 ## Compile & Run the system
 
